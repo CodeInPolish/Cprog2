@@ -1,0 +1,12 @@
+5! = 120
+Error: empty line
+10! = 3628800
+0! = 1
+Error: invalid character
+Error: integer overflow
+Error: invalid character
+Error: invalid character
+7! = 5040
+Error: too many characters
+Error: too many characters
+9! = 362880
