@@ -23,20 +23,40 @@ int fact(int number){
 
 void main() {
 
-	printf("%d\n", fact(0));
-	printf("%d\n", fact(1));
-	printf("%d\n", fact(2));
-	printf("%d\n", fact(3));
-	printf("%d\n", fact(4));
-	printf("%d\n", fact(5));
-	printf("%d\n", fact(6));
-	printf("%d\n", fact(7));
-	printf("%d\n", fact(8));
-	printf("%d\n", fact(9));
-	printf("%d\n", fact(10));
-	printf("%d\n", fact(11));
-	printf("%d\n", fact(12));
-	printf("%d\n", fact(13));
+	while(1){
+		int read = getchar();
+
+		if(read > 47 & read < 58){
+			int read2 = getchar();
+			if(read2 == 10){
+				printf("%d! = %d\n", read-48, fact(read-48));
+			}
+			else if(read2 > 47 & read < 58 && getchar() == 10){
+				int number=(read-48)*10 + read2-48;
+				if(number < 13){
+					printf("%d! = %d\n", number, fact(number) );
+				}
+				else{
+					printf("Error: integer overflow\n");
+				}
+				
+			}
+			else{
+				printf("Error: too many characters\n");
+				while(getchar()!=10);
+			}
+		}
+		else if(read < 0){
+			break;
+		}
+		else if(read == 10){
+			printf("Error: Empty line\n");
+		}
+		else{
+			printf("Error: enter a number between 0 and 9\n");
+			while(getchar()!=10);
+		}
+	}
 
 	exit(0);
 }
