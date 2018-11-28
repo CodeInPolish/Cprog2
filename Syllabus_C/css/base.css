@@ -1,0 +1,146 @@
+/** Base.css : le style principal et les tags html **/
+
+/**GENERAL**/
+* {
+	padding: 0;
+	margin: 0;
+}
+body {
+	background-color: #cccccc;
+	font-family: "Arial";
+	font-size: medium;
+}
+
+/**HEADER**/
+header{
+	background: #333;
+	padding-top: 1.8em;
+	padding-bottom: 1em;
+	margin-bottom: 1.5em;
+	border-bottom: 1.5px solid #f2f2f2;
+}
+h1 {
+	color: #f9811c;  /*#d9d9d9;*/
+	padding-left: 5%;
+	font-weight: 900;
+	letter-spacing: 0.17em;
+	font-size: 2em;
+}
+
+/**MAIN**/
+h2 {
+	color: #36099b;
+	margin-top: 0.2em;
+	margin-bottom: 1.4em;
+	font-size: 2em;
+}
+h3 {
+	margin-top: 2em;
+	margin-bottom: 0.7em;
+	font-size: 1.6em;
+}
+h4 {
+	margin-top: 1.1em;
+	margin-bottom: 0.6em;
+	text-decoration: underline;
+	font-size: 1.2em;
+}
+
+/**Code**/
+pre {
+	font-size: 1.05em;
+	line-height: normal;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+	white-space: pre-line;
+	background-color: rgb(43, 43, 43);
+	color: rgb(248, 248, 240);
+	padding-left: 5.5em;
+	border-radius: 1em;
+	counter-reset: line; 
+	padding-top: 0.7em;
+	padding-bottom: 0.7em;
+	position: relative;
+}
+pre code::before{
+	display: inline-block;
+	text-align: right;
+	padding-right: 5px;
+	color: gray;
+	content: counter(line);
+	left: 2.3em;
+	position: absolute;
+	width: 1.3em;
+	border-right: 1px solid gray;
+}
+pre code {
+	counter-increment: line;
+	white-space: pre;
+	line-height: 1.5em;
+}
+
+/**Table**/
+table{
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
+	margin-left: auto;
+	margin-right: auto;
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+table, th, td {
+	border: 1px solid black;
+	text-align: left;
+}
+table.a {
+    table-layout: auto;
+    width: 700px;
+}
+th, td{
+	padding-top: 0.3em;
+	padding-bottom: 0.3em;
+	padding-left: 0.8em;
+	padding-right: 0.8em;
+}
+th {
+	background-color: #cccbcb;
+	text-align: center;
+}
+td {
+	background-color: #e7e7e7;
+}
+td.nv {
+	color: #b61eef;
+}
+
+/**List**/
+ul {
+	list-style-type: circle;
+}
+ul li {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	margin-left: 2.5em;
+}
+
+/**FOOTER**/
+footer {
+	color: white;
+	padding: 1em;
+	background-color: #333;
+	text-align: center;
+}
+footer img {
+	padding-left: 20px;
+	vertical-align: middle;
+}
+footer a{
+	color: white;
+	text-decoration: underline;
+}
+
+
+
+
+
+

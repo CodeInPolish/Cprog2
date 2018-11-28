@@ -1,0 +1,83 @@
+/** modules.css : les classes types pour la mise en forme en détail **/
+
+/**Style**/
+
+.it { /**italic**/
+	font-style: italic;
+}
+.bo { /**bold**/
+	font-weight: bold;
+}
+.un { /**underline**/
+	text-decoration: underline;
+}
+.hl { /* highlight */
+	color: #cc0000;
+}
+.code {
+	color: #5900b3;
+ 	font-style: italic;
+   font-weight: bold;
+   font-family: "Courier new", monospace; 
+   font-size: 96%;
+}
+
+/**Display**/
+.inline {
+	display: inline-block;
+	margin-right: 7px;
+}
+.info{
+	font-size: 0.8em;
+}
+.arr-pt::before{ /* array point */
+	content: "\025B8";
+	margin-right: 7px;
+}
+.pad-l{  /* padding left */
+	padding-left: 1.3em;
+}
+.d-cir{  /* solid circle */
+	list-style-type: disc;
+}
+
+/**Code**/
+.static{
+	font-style: italic;
+}
+.com{ /* comment */
+	color: rgb(117, 113, 94);
+}
+.stn, .hdf{ /* string, header-file */
+	color: rgb(230, 219, 116);
+}
+.nbr, .var, .val{ /* number, variable, value */
+	color: rgb(174, 129, 255);
+}
+.kwd{ /* keyword */
+	color: rgb(249, 38, 114);
+}
+.fct{ /* function */
+	color: rgb(166, 226, 46);
+}
+.ppd{ /* preprocessor directive */
+	color: rgb(249, 38, 114);
+	font-weight: 600;
+}
+.tde{ /* typedef */
+	color: rgb(50, 230, 255);
+}
+.sds, .mac{ /* standard-stream, macro */
+	color: rgb(238, 126, 73);
+}
+/* data-types */
+.btyp{ /* built-in types */
+	color: rgb(249, 38, 114);
+	font-style: italic;
+}
+.str, .uni{ /* structure, union */
+	color: rgb(20, 160, 255);
+}
+.enum{ /* enumeration */
+	color: rgb(255, 150, 150);
+}

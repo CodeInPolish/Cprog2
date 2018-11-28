@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Legrand Anthony, Verriest Anthony">
+    <meta name="description" content="Syllabus langage C">
+    <meta name="keywords" content="Programmation, Langage C">
+	<title>Cours de Langage C</title>
+	<link rel="stylesheet" type="text/css" href="../css/base.css">
+	<link rel="stylesheet" type="text/css" href="../css/layout.css">
+	<link rel="stylesheet" type="text/css" href="../css/modules.css">
+</head>
+<body>
+	<header id="header">
+		<h1>Le langage C</h1>
+	</header>
+
+	<!--Navigation bar-->
+	<nav class="sticky-nav">
+		<nav class="nav">
+			<a href="../index.html">Introduction</a>
+	  		<div class="dropdown">
+	    		<button class="dropdownbtn">Cours &#x25BC;</button>
+	    		<div class="dropdown-content">
+	    			<div class="dropdown-content-in">
+						<a href="./langage.html">1. Éléments du langage</a>
+						<a href="./instructions.html">2. Instructions</a>
+						<a href="./tableaux.html">3. Tableaux</a>
+						<a href="./pointeurs.html">4. Pointeurs</a>
+						<a href="./chaines.html">5. Chaînes de caractères</a>
+						<a href="./entrees-sorties.html">6. Entrées-sorties</a>
+						<a href="./fonctions.html">7. Fonctions</a>
+					</div>
+					<div class="dropdown-content-in">
+						<a href="./modularisation.html">8. Modularisation</a>
+						<a href="./structures.html">9. Structures et autres types utilisateurs</a>
+						<a href="./fichier.html">10. Fichiers</a>
+						<a href="./classes.html">11. Classes d'allocation</a>
+						<a href="./preprocesseur.html">12. Préprocesseur [TODO]</a>
+						<a href="./librairies.html">13. Librairies [TODO]</a>
+					</div>
+	    		</div>
+	  		</div> 
+	  		<a href="./lexique.html">Index [TODO]</a>
+		</nav>
+	</nav>
+
+	<!--Main Content-->
+	<section id="main">
+		<!-- <h2 class="title"><center>8. Modularisation</center></h2> -->
+
+		<section id="content">
+			<button onclick="topFunction()" id="top" title="Remonter">&#x21ea;</button>
+
+			<h2 class="title"><center>8. La modularisation</center></h2>
+
+			<p>
+				Nous avons vu dans le chapitre précédent qu'un gros programme peut être découpé
+				en plusieurs fonctions de manière à en simplifier la programmation et la lecture.
+				Nous allons aborder dans ce chapitre la manière d'organiser ces fonctions en différents fichiers.
+				Cette façon de travailler évitera au programmeur la manipulation de gros fichiers lourds 
+				à maintenir et à compiler. Cela permet aussi la réutilisation de fonctions dans plusieurs applications.
+			</p>
+
+			<h3>La découpe en modules</h3>
+			<p>
+				La création d'un module doit répondre à une nécessité fonctionnelle (p.e. rassembler toutes les fonctions qui manipulent une liste)
+				ou organisationnelle (p.e. réunir dans un fichier toutes les fonctions utilitaires liées à une application). Un module constitue ainsi une boîte à outil complète, assimilable à une classe java où le header correspond à l’interface publique de la classe.
+			</p>
+			<p>
+				Cette découpe en plusieurs fichiers offre la possibilité de réutiliser dans d'autres applications les fonctions définies pour une application, simplement en faisant référence à ce module.
+			</p>
+			<p>
+				En C, un <span class="bo">module</span> est constitué d'un fichier source (extension .c) et un fichier entête (extension .h). Un module reprend la définition de fonctions et/ou types et/ou variables et/ou constantes traitant une sous partie du problème global.
+			</p>
+
+			<h3 id="id_head">Les fichiers d'entête (<span class="it">header files</span>)</h3>
+			<p>
+				Pour appeler une fonction à l'intérieur d'un module, il faut en connaître le nom et la manière de l'utiliser type de la fonction + liste de ses paramètres, il est donc nécessaire de rappeler le prototype des fonctions dans tous les fichiers où elles sont référencées.
+			</p>
+			<p>
+				Mais réécrire le prototype dans tous les fichiers où cela est nécessaire est un travail ardu qui peut facilement générer des erreurs.
+				Il est préférable d'écrire ces prototypes une fois pour toutes dans un seul fichier par module,
+				que l'on va inclure dans tous les fichiers où se trouvent des appels aux fonctions.
+				Le langage C a prévu ce mécanisme d'inclusion de fichiers en introduisant la notion de <span class="bo">fichier d'entête</span> (<span class="it">header file</span>
+				en anglais, d'où vient l'extension <span class="code">.h</span>).
+				C'est le travail du préprocesseur étape précédant la compilation de veiller à inclure ces fichiers dans les sources C.
+			</p>
+			<p>
+				Il existe 2 syntaxes pour donner au préprocesseur le nom d'un fichier à inclure :
+			</p>
+			<ul>
+				<li>
+					<p>
+						La première - que vous avez rencontrée depuis votre premier programme - permet d'inclure un fichier d'entête lié aux fonctions standards;
+						elle spécifie le nom du fichier entre les caractères <span class="hl">&lt;</span> et <span class="hl">&gt;</span>, comme dans l'instruction 
+					</p>
+					<p>
+						<span class="code">#include &lt;stdbool.h&gt;</span>
+					</p>
+					<p>
+						qui permet d'utiliser le type booléen <span class="it">bool</span>.
+					</p>
+				</li>
+				<li>
+					<p>
+						La seconde utilise le caractère <span class="hl">"</span>. Elle indique au préprocesseur d'inclure le fichier d'entête se trouvant dans le réperoire courant.
+						En voici un exemple:
+					</p>
+					<p>
+						<span class="code">#include "pile.h"</span>
+					</p>
+					<p>
+						où le fichier <span class="it">pile.h</span> reprend le prototype des fonctions de gestion d'une pile, 
+						dont le code se trouve dans un module <span class="it">pile.c</span>.
+					</p>
+				</li>
+			</ul>
+			<p>
+				<span class="bo">Un header comprend toutes les informations publiques du module, càd. toutes les informations destinées à être partagées entre différentes applications. Outre la déclaration des prototypes des fonctions</span> (accompagnés de leurs spécifications)<span class="bo">, un fichier d'entête peut contenir
+				des définitions de constantes</span> (sous forme de macros, comme par exemple:
+				<span class="code">#define TAILLE 100</span>)<span class="bo">, des définitions de types</span> (introduites par <a href="./structures.html#id_typedef">typedef</a>)<span class="bo">,
+				la déclaration de variables externes, mais</span> <span class="hl">aucune ligne de code!</span>
+			</p>
+			<p>
+				Voici un exemple du fichier d'entete <span class="code">pile.h</span>.
+			</p>
+			<pre>  
+				<code><span class="com">/***********************************************************************</span></code>
+			 	<code><span class="com">* pile.h</span></code>
+				<code><span class="com">* gestion d'une pile d'entiers par une table </span></code>
+				<code><span class="com">***********************************************************************/</span></code>
+				<code></code>
+				<code><span class="ppd">#include</span> <span class="hdf">&lt;stdbool.h&gt;</span></code>
+				<code></code>  
+				<code><span class="ppd">#ifndef</span> <span class="mac">_PILE_H_</span>    <span class="com">// ou:  #if ! defined _PILE_H_</span></code>
+				<code><span class="ppd">#define</span> <span class="mac">_PILE_H_</span></code>
+				<code></code>
+				<code><span class="com">/* definition de constantes */</span></code>
+				<code><span class="ppd">#define</span> <span class="mac">OK</span> <span class="nbr">0</span></code>
+				<code><span class="ppd">#define</span> <span class="mac">KO</span> <span class="nbr">1</span></code>
+				<code></code>
+				<code><span class="com">/* definition de types */</span></code>
+				<code><span class="kwd">typedef</span> ...... <span class="tde">Pile</span>;</code>
+			 	<code></code>
+				<code><span class="com">/* déclaration de fonctions et spécifications */</span></code>
+				<code><span class="com">// initialise la pile</span></code>
+				<code><span class="tde">Pile</span> <span class="fct">init</span> ();</code>
+				<code><span class="com">// empile un entier sur la pile</span></code>
+				<code><span class="kwd">void</span> <span class="fct">push</span> (<span class="tde">Pile</span>*, <span class="btyp">int</span>);</code>
+				<code><span class="com">// depile  et retourne un entier de la pile</span></code>
+				<code><span class="btyp">int</span> <span class="fct">pop</span> (<span class="tde">Pile</span>*);</code>
+				<code><span class="com">// vérifie si la pile est vide</span></code>
+				<code><span class="mac">bool</span> <span class="fct">isEmpty</span> (<span class="tde">Pile</span>);</code>
+				<code><span class="com">// vérifie si la pile est pleine</span></code>
+				<code><span class="mac">bool</span> <span class="fct">isFull</span> (<span class="tde">Pile</span>);</code>
+				<code><span class="com">// affiche la pile</span></code>
+				<code><span class="kwd">void</span> <span class="fct">print</span> (<span class="tde">Pile</span>);</code>
+				<code></code>
+				<code><span class="ppd">#endif</span>    <span class="com">// _PILE_H_</span></code>
+			</pre>
+			<p>
+				La ligne 9 est un directive conditionnelle du préprocesseur qui permet d'éviter la double inclusion: elle permet de s’assurer que le contenu du fichier d'entête ne sera inclus qu’une seule et unique fois lors de la compilation. Si la macro <span class="code">_PILE_H_</span> est déjà définie, c'est que le fichier a déjà été inclus dans la source 
+				et il est donc inutile de réaliser le traitement qui suit, càd. ajouter les différentes déclarations.
+			</p>
+			<p>
+				Notez qu'<span class="bo">un fichier d'entête inclut uniquement les librairies qui sont nécessaires pour que le compilateur puisse "comprendre" celui-ci.</span> Dans le cas de <span class="it">pile.h</span>, seule la librairie <span class="it">stdbool.h</span> doit être incluse afin que le compilateur connaisse la signification de l'identificateur <span class="it">bool</span> présent dans le prototype des fonctions isEmpty et isFull. Les librairies standard nécessaires à la compilation du code source seront quant à elles incluses dans le fichier <span class="it">pile.c</span>.
+			</p>
+
+			<h3>Les fichiers "source" des fonctions</h3>
+			<p>
+				C'est dans ces fichiers que l'on retrouve <span class="bo">le code des fonctions</span> (extension <span class="code">.c</span>) qui complètent l'application.
+			</p>
+			<p>
+				Le fichier source comprend toujours l'inclusion du fichier d'entête pour bénéficier
+				des différentes définitions de macros, types et variables.
+			</p>
+			<p>
+				Voici une partie du fichier source <span class="code">pile.c</span> correspondant au fichier d'entête <span class="code">pile.h</span>
+				présenté ci-dessus. L'implémentation du code est laissé à votre discrétion.
+			</p>
+			<pre>  
+				<code><span class="com">/***********************************************************************</span></code>
+			 	<code><span class="com">* pile.c</span></code>
+				<code><span class="com">* gestion d'une pile d'entiers par une table </span></code>
+				<code><span class="com">***********************************************************************/</span></code>
+				<code></code>
+				<code><span class="ppd">#include</span> <span class="hdf">&lt;stdio.h&gt;</span></code>
+				<code><span class="ppd">#include</span> <span class="hdf">&lt;stdlib.h&gt;</span></code>
+				<code><span class="ppd">#include</span> <span class="hdf">"pile.h"</span></code>
+				<code></code>
+				<code><span class="com">/* définitions de variables globales </span></code>
+				<code><span class="com">(reprenant par exemple les types d'erreurs) */</span></code>
+				<code></code>
+				<code><span class="com">/* implémentation des fonctions */</span></code>
+				<code></code>
+				<code><span class="tde">Pile</span> <span class="fct">init</span> () {</code>
+				<code>    ......</code>
+				<code>}</code>
+				<code></code>
+				<code><span class="kwd">void</span> <span class="fct">push</span> (<span class="tde">Pile</span> *<span class="var">p</span>, <span class="btyp">int</span> <span class="var">val</span>) {</code>
+				<code>    .....</code>
+			 	<code>}</code>
+			 	<code></code> 
+			 	<code><span class="btyp">int</span> <span class="fct">pop</span> (<span class="tde">Pile</span> *<span class="var">p</span>) {</code>
+			 	<code>    ......</code>
+				<code>}</code>
+				<code></code> 
+				<code><span class="mac">bool</span> <span class="fct">isEmpty</span> (<span class="tde">Pile</span> <span class="var">p</span>) {</code>
+				<code>    ......</code>
+				<code>}</code>
+				<code></code>
+				<code><span class="mac">bool</span> <span class="fct">isFull</span> (<span class="tde">Pile</span> <span class="var">p</span>) {</code>
+				<code>    ......</code>
+				<code>}</code>
+				<code></code>
+				<code><span class="kwd">void</span> <span class="fct">print</span> (<span class="tde">Pile</span> <span class="var">p</span>) {</code>
+				<code>    .....</code>
+				<code>}</code> 
+			</pre>
+			<p>
+				Notez qu'un fichier source contenant le programme principal - i.e. la fonction <span class="hl">main</span> - n'a généralement pas de fichier d'entête. En effet, un header permet de partager un module entre différentes applications. Un exécutable ne constitue pas donc pas un module à proprement parler.
+			</p>
+
+			<h3 id="id_mfile">Le makefile</h3>
+			<p>
+				La génération d'une application passe par plusieurs étapes, notamment :
+			</p>
+			<ul>
+				<li>
+					<p>
+						La <span class="hl">compilation</span> des différentes sources grâce au compilateur:
+						par exemple pour compiler le fichier <span class="code">module.c</span>,
+						il faut appeler le compilateur au moyen de la commande  <span class="code">cc -c module.c</span>
+						qui va fournir un module objet, ici le fichier <span class="code">module.o</span>.
+					</p>
+				</li>
+				<li>
+					<p>
+						L'<span class="hl">édition des liens</span> réalisée par l'éditeur de lien (appelé par la commande <span class="code">cc</span>):
+						<span class="code">cc -o executable *.o </span> va générer l'exécutable
+						en assemblant les différents modules objets <span class="code">*.o</span> et librairies standard
+						en un fichier exécutable, ici <span class="code">executable</span>.
+					</p>
+				</li>
+			</ul>
+			<p>
+				L'utilitaire <span class="bo"><a href="http://www.gnu.org/software/make/" target="_blank">make</a></span> peut automatiser cette séquence de traitements, 
+				en se limitant à l'exécution de ceux qui sont nécessaires pour mettre à jour l'application.
+				Pour réaliser ce travail, la commande <span class="code">make</span> () utilise un fichier, appelé  par défaut <span class="code">Makefile</span>, 
+				qui comprend une série de règles, traitées récursivement.
+			</p>
+			<p>
+				Chaque règle comprend:
+			</p>
+			<ul>
+				<li>
+					<p>
+						une <span class="bo">condition de dépendance</span> basée sur le <a href="https://www.unixtutorial.org/mtime/" target="_blank">mtime</a> des fichiers. La règle suivante:
+					</p>
+					<p>
+						<span class="code">cible : dépendance1 dépendance2 dépendante3</span>
+					</p>
+					<p>
+						implique que l'action correspondante ne sera réalisée que si la cible est plus ancienne qu'une des dépendances 
+						(càd. si le mtime de la cible est plus petit que le mtime d'une des dépendances) ;
+					</p>
+				</li>
+				<li>
+					<p>
+						et une <span class="bo">action</span>:
+					</p>
+					<p>
+						<span class="code">&lt;\t&gt; action </span>
+					</p>
+					<p>
+						commande  précédée d'un caractère de tabulation. <span class="code">make</span> n'exécutera l'action que si la condition le réclame.
+					</p>
+				</li>
+			</ul>
+			<p>
+				Pour évaluer le mtime des dépendances, <span class="code">make</span> recherche plus loin dans la liste des règles celles qui vont mettre à jour ces dépendances,
+				et ainsi de suite, de manière récursive. 
+			</p>
+			<p>
+				Voici le fichier <span class="code">Makefile</span> associé à une application qui utilise notre module <span class="code"> pile</span> : 
+			</p>
+			<pre>
+				<code><span class="com">#################################################################</span></code>
+			  	<code><span class="com"># Makefile</span></code>
+			  	<code><span class="com"># calculatrice en notation polonaise inversée</span></code>
+			  	<code><span class="com">#################################################################</span></code>
+			  	<code></code>
+			  	<code>CFLAGS = -std=c11 -pedantic -Wvla -Wall -Werror -g</code>
+			  	<code></code>
+			  	<code>npi : npi.o pile.o</code>           
+			  	<code>&#09;cc $(CFLAGS) -o npi npi.o pile.o    <span class="com"># édition de liens</span></code>
+			 	<code></code>
+			 	<code>npi.o : npi.c pile.h</code>
+			 	<code>&#09;cc $(CFLAGS) -c npi.c    <span class="com"># compilation du module npi</span></code>
+			 	<code></code>
+			 	<code>pile.o : pile.c pile.h</code>
+			 	<code>&#09;cc $(CFLAGS) -c pile.c    <span class="com"># compilation du module pile</span></code>
+			 	<code></code>
+			 	<code>clean :</code>
+			 	<code>&#09;rm *.o</code>
+			 	<code>&#09;rm npi</code>
+			 </pre>
+
+			<p>
+				Dans ce fichier, la règle (8-9) construit l'exécutable <span class="code">npi</span> grâce à l'édition des liens (9) 
+				qui "fusionne" les différents modules de l'application ainsi que certaines librairies standard ;
+				la règle (14-15) vérifie le module objet <span class="code">pile.o</span>
+				et éventuellement compile (15) la source <span class="code">pile.c</span> pour le mettre à jour si ce module objet est plus ancien que les fichiers dont il dépend,
+				à savoir la source <span class="code">pile.c</span> et le fichier d'include <span class="code">pile.h</span>, fichier inclus dans le fichier <span class="code">pile.c</span>, etc.
+			</p>
+			<p>
+				En résumé :
+				<span class="bo">make exécute l'édition des liens si un des modules objets a été mis à jour, et recompile un module si un des fichiers a été modifié.</span>
+			</p>
+			<p>
+				Notez pour finir que, si la commande <span class="code">make</span> s'utilise la plupart du temps sans paramètre, il est possible de nommer 
+				une cible particulière. Dans ce cas, l'action correspondant à la cible spécifiée sera exécutée (si la condition l'exige). 
+				Par exemple:</p>
+			<ul>
+				<li>
+					<p>
+						<span class="code">make </span> provoquera l'exécution des commandes nécessaires pour mettre à jour l'exécutable npi ;
+					</p>
+				</li> 
+				<li>
+					<p>
+						<span class="code">make pile.o </span> provoquera uniquement la compilation du module pile.o (si pile.h ou pile.c ont été modifiés) et
+					</p>
+				</li>
+				<li>
+					<p>
+						<span class="code">make clean </span> provoquera l'effacement des modules objets et de l'exécutable.
+					</p>
+				</li>
+			</ul>
+				<p>
+					Remarquez pour finir qu'un makefile peut générer plusieurs exécutables (il comprend dès lors plusieurs commandes <span class="code">cc -o</span>). Dans ce cas, une nouvelle règle est ajoutée au début du makefile: 
+				</p>
+			<ul>
+				<li>
+					<p>
+						<span class="code">all : executable1 executable2 .....</span>
+					</p>
+				</li>
+			</ul>
+			<p>
+				Cette règle permet de générer l'ensemble des exécutables listés via la commande <span class="code">make all</span>.
+			</p>
+
+		</section>
+	</section>
+
+	<footer>
+		<p id="copyright"> <a href="mailto:anthony.legrand@vinci.be">Anthony Legrand</a> &copy; 2018 <a href="http://www.ipl.be"><img src="../images/ipl_bleu.png" alt="logo ipl" /></a></p>
+	</footer>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

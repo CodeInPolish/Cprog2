@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Legrand Anthony, Verriest Anthony">
+    <meta name="description" content="Syllabus langage C">
+    <meta name="keywords" content="Programmation, Langage C">
+	<title>Cours de Langage C</title>
+	<link rel="stylesheet" type="text/css" href="../css/base.css">
+	<link rel="stylesheet" type="text/css" href="../css/layout.css">
+	<link rel="stylesheet" type="text/css" href="../css/modules.css">
+</head>
+<body>
+	<header id="header">
+		<h1>Le langage C</h1>
+	</header>
+
+	<!--Navigation bar-->
+	<nav class="sticky-nav">
+		<nav class="nav">
+			<a href="../index.html">Introduction</a>
+	  		<div class="dropdown">
+	    		<button class="dropdownbtn">Cours &#x25BC;</button>
+	    		<div class="dropdown-content">
+	    			<div class="dropdown-content-in">
+						<a href="./langage.html">1. Éléments du langage</a>
+						<a href="./instructions.html">2. Instructions</a>
+						<a href="./tableaux.html">3. Tableaux</a>
+						<a href="./pointeurs.html">4. Pointeurs</a>
+						<a href="./chaines.html">5. Chaînes de caractères</a>
+						<a href="./entrees-sorties.html">6. Entrées-sorties</a>
+						<a href="./fonctions.html">7. Fonctions</a>
+					</div>
+					<div class="dropdown-content-in">
+						<a href="./modularisation.html">8. Modularisation</a>
+						<a href="./structures.html">9. Structures et autres types utilisateurs</a>
+						<a href="./fichier.html">10. Fichiers</a>
+						<a href="./classes.html">11. Classes d'allocation</a>
+						<a href="./preprocesseur.html">12. Préprocesseur [TODO]</a>
+						<a href="./librairies.html">13. Librairies [TODO]</a>
+					</div>
+	    		</div>
+	  		</div> 
+	  		<a href="./lexique.html">Index [TODO]</a>
+		</nav>
+	</nav>
+
+	<!--Main Content-->
+	<section id="main">
+		<!-- <h2 class="title"><center>9. Structures et autres types utilisateurs</center></h2> -->
+
+		<section id="content">
+			<button onclick="topFunction()" id="top" title="Remonter">&#x21ea;</button>
+
+			<h2 class="title"><center>9. Structures et autres types utilisateurs</center></h2>
+
+			<h3>Structures</h3>
+			<p>
+				Jusqu'à présent, nous utilisions des types de données simples : <a href="./langage.html#id_int-typ">entiers</a>,
+			 	<a href="./langage.html#id_real-typ">réels</a> ou encore les <a href="./tableaux.html">tableaux</a> et les <a href="./pointeurs.html">pointeurs</a>.
+				Dans ce chapitre, nous abordons les types personnalisés, construits dans le cadre d'une application spécifique.
+				L'un de ces types utilisateurs est un type composé, appelé <span class="hl">structure</span>, permettant de regrouper des données pouvant être de types différents dans une même entité.
+			</p>
+			<p>
+				Ce premier exemple
+			</p>
+			<pre>
+				<code><span class="kwd">struct</span> <span class="str">Point</span> {</code>
+			    <code>    <span class="btyp">int</span> <span class="var">abscisse</span>;</code>
+			    <code>    <span class="btyp">int</span> <span class="var">ordonnee</span>;</code>
+				<code>};</code>
+			</pre>
+			<p>
+				déclare un nouveau type, <span class="code">struct Point</span>,
+				composé de deux champs de type <span class="code">int</span> appelés <span class="code">abscisse</span> et <span class="code">ordonnee</span>.
+				Le mot-clé <span class="hl">struct</span> est obligatoire, il introduit la description de la structure.
+				Il peut être suivi d'un <span class="hl">tag</span> (ou <span class="it">étiquette</span>) identifiant la structure (ici: <span class="code">Point</span>).
+				La liste des <span class="hl">champs</span> est placée entre les caractères accolades '<span class="hl">{</span>' et '<span class="hl">}</span>'.
+			</p>
+			<p>
+				Une variable <span class="code">origine</span> de ce type <span class="code">struct Point</span>
+				sera définie en précisant son type et recevra éventuellement une valeur initiale.
+			</p>
+			<pre>
+				<code><span class="kwd">struct</span> <span class="str">Point</span> <span class="var">origine</span>;    <span class="com">// sans initialisation ou </span></code>
+				<code><span class="kwd">struct</span> <span class="str">Point</span> <span class="var">origine</span> = {<span class="nbr">0</span>, <span class="nbr">0</span>};    <span class="com">// avec initialisation </span></code>
+			</pre>
+			<p>
+				Notez que, par convention d'écriture, <span class="bo">les noms de types commencent toujours par une majuscule</span>. S'ils sont composés de plusieurs 
+				mots, chaque mot commence par une majuscule et il n'y a pas de séparateurs. Exemples: <span class="code">MonType, PileDEntiers, GrapheNonCyclique</span>.
+			</p>
+			<p>
+				Notez également que <span class="bo">les définitions de types se font généralement en début de programme</span>, c'est-à-dire après les directives du préprocesseur 
+				(<span class="code">#include</span> et <span class="code">#define</span>) et avant le programme principal et les fonctions. De cette manière, les types utilisateurs
+				pourront être utilisés à tout endroit du code qui suit leur définition. Dans le chapitre <a href="./modularisation.html#id_head"><i>Modularisation</i></a>, nous avons vu que les
+				définitions de types, tout comme les prototypes de fonctions, sont de préférence placées dans des fichiers d'entête (extension <span class="code">.h</span>) 
+				qui seront inclus dans des fichiers sources (extension <span class="code">.c</span>).
+			</p>
+
+			<h4>Utilisation</h4>
+
+			<p>
+				Deux nouveaux opérateurs sont introduits pour permettre l'accès à un des champs d'une structure.
+			</p>
+			<table>
+				<tbody>
+					<tr>
+						<th>Niveau de priorité</th>
+						<th>Opérateur</th>
+						<th>description</th>
+						<th>Associativité</th>
+					</tr>
+					<tr>
+						<td rowspan=4>17</td>
+						<td>[]</td>
+						<td>indice de tableau</td>
+						<td rowspan=4>gauche</td>
+					</tr>
+					<tr>
+						<td>(...)</td>
+						<td>appel de fonction</td>
+					</tr>
+					<tr>
+						<td class="nv">.</td>
+						<td class="nv">sélection de membre</td>
+					</tr>
+					<tr>
+						<td class="nv">-&gt;</td>
+						<td class="nv">sélection de membre par déréférencement</td>
+					</tr>
+					<tr>
+						<td rowspan=2>16</td>
+						<td>++</td>
+						<td>post-incrémentation</td>
+						<td rowspan=2>gauche</td>
+					</tr>
+					<tr>
+						<td>--</td>
+						<td>post-décrémentation</td>
+					</tr>
+					<tr>
+						<td rowspan=2>15</td>
+						<td>++</td>
+						<td>pré-incrémentation</td>
+						<td rowspan=2>droite</td>
+					</tr>
+					<tr>
+						<td>--</td>
+						<td>pré-décrémentation</td>
+					</tr>
+					<tr>
+						<td rowspan=7>15</td>
+						<td>sizeof</td>
+						<td>calcule la taille d'une variable(d'un type)</td>
+						<td rowspan=7>droite</td>
+					</tr>
+					<tr>
+						<td>~</td>
+						<td>complément à 1 (inversion des bits)</td>
+					</tr>
+					<tr>
+						<td>!</td>
+						<td>non logique </td>
+					</tr>
+					<tr>
+						<td>+</td>
+						<td>identité (opérateur unaire)</td>
+					</tr>
+					<tr>
+						<td>-</td>
+						<td>changement de signe (complément à 2)</td>
+					</tr>
+					<tr>
+						<td>&</td>
+						<td>adresse</td>
+					</tr>
+					<tr>
+						<td>*</td>
+						<td>indirection, déréférenciation</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<p>
+				L'accès à un champs d'une structure se fait en spécifiant le nom de la variable 
+			 	et le nom du champs introduit par l'opérateur point '<span class="hl">.</span>', comme dans l'exemple suivant:
+			 </p>
+			<pre>
+				<code><span class="var">origine</span>.<span class="var">abscisse</span> = <span class="nbr">2</span>;</code>
+			</pre>
+			<p>
+				où <span class="code">origine </span> est le nom de la variable et <span class="code">abscisse</span> le nom du composant.</p>
+				<p>Une structure peut également être accédée par <a href="./pointeurs.html">pointeur</a>, <span class="code">struct Point *ptr</span>.
+				Dans ce cas on utilisera plus volontiers l'opérateur flèche '<span class="hl">-></span>' pour accéder à un composant,
+				comme dans l'exemple suivant:
+			</p>
+			<pre>
+				<code><span class="kwd">struct</span> <span class="str">Point</span> *<span class="var">ptr</span> = &amp;<span class="var">origine</span>;</code>
+				<code>(*<span class="var">ptr</span>).<span class="var">abscisse</span> = <span class="nbr">2</span>;</code>
+				<code><span class="var">ptr</span>-><span class="var">abscisse</span> = <span class="var">2</span>;    <span class="com">// syntaxe plus claire et concise que celle de l'instruction précédente </span></code>
+			</pre>
+			<p>
+				L'écriture <span class="code">ptr-&gt;abscisse = 2;</span> équivaut à l'expression <span class="code">(*ptr).abscisse = 2;</span>
+				(attention, les parenthèses sont obligatoires vu les <a href="./langage.html#id_ope-pri">règles de priorité des opérateurs</a>)
+				mais nous préférerons la première à la seconde pour raison de lisibilité.
+			</p>
+
+			<h4>Opérations sur les structures</h4>
+			<p>
+				Les seules opérations permises sur les structures sont:
+			</p>
+			<ul>
+				<li>
+					<p>
+						<span class="bo">l'accès à un champ</span>
+					</p>
+					<pre>
+						<code><span class="var">origine</span>.<span class="var">abscisse</span></code>
+						<code><span class="var">ptr</span>-&gt;<span class="var">abscisse</span></code>
+					</pre>
+				</li>
+				<li>
+					<p>
+						<span class="bo">prendre l'adresse d'une structure</span>
+					</p>
+					<pre>
+						<code><span class="var">ptr</span> = &amp;<span class="var">origine</span></code>
+					</pre>
+				</li>
+				<li>
+					<p>
+						<span class="bo">prendre l'adresse d'un champ</span>
+					</p>
+					<pre>
+						<code><span class="str">int</span> * <span class="var">p</span> = &amp;<span class="var">origine</span>.<span class="var">abscisse</span></code>
+					</pre>
+				</li>
+				<li>
+					<p>
+						<span class="bo">affectation de structure à structure</span> (copie bit à bit d'une structure dans une autre structure de même type)
+					</p>
+					<pre>
+						<code><span class="var">monPoint</span> = <span class="var">origine</span>;</code>
+					</pre>
+				</li>
+				<li>
+					<p>
+						<span class="bo">passage d'une structure comme paramètre de fonction</span>
+					</p>
+					<pre>
+						<code><span class="kwd">void</span> <span class="fct">afficherPoint</span> (<span class="kwd">struct</span> <span class="str">Point</span> <span class="var">p</span>) { ... } </code>
+					</pre>
+				</li>
+				<li>
+					<p>
+						<span class="bo">structure comme valeur de retour d'une fonction</span>
+						</p>
+					<pre>
+						<code><span class="kwd">struct</span> <span class="str">Point</span> <span class="fct">fct</span> (<span class="btyp">int</span> <span class="var">a</span>, <span class="btyp">int</span> <span class="var">o</span>) { .... <span class="kwd">return</span> <span class="var">p</span>; }</code>
+					</pre>
+				</li>
+			</ul>
+
+			<h4>Taille d'une structure</h4>
+			<p>
+				La taille d'une structure sera toujours supérieure ou égale à la somme des tailles de tous ses composants:
+			</p>
+			<p>
+				<span class="code">sizeof(struct)</span> &ge; &sum; <span class="code">sizeof(composants)</span>
+			</p>
+			<p>
+				Ceci est lié à la nécessité d'aligner les champs sur des adresses mémoires compatibles avec le type des composants (cf. phénomène du 
+				<span class="it"><a href="https://fresh2refresh.com/c-programming/c-structure-padding/" target="_blank">structure padding</a></span> que l'on pourrait traduire par "espacement" ou "remplissage" de structure).
+			</p>
+
+			<h4>Structures récursives</h4>
+			<p>
+				Une structure récursive est une structure dont au moins un des champs est lui-même une structure de ce même type.
+				En C, il n'est pas possible de créer une structure réellement récursive car le compilateur doit connaître
+				la taille de la structure et donc la taille de chaque champ  avant de l'utiliser. L'écriture suivante est donc interdite : 
+			</p>
+			<pre>
+				<code><span class="kwd">struct</span> <span class="str">Noeud</span> {</code>
+			    <code>    <span class="btyp">int</span> <span class="var">valeur</span>;</code>
+			    <code>    <span class="kwd">struct</span> <span class="str">Noeud</span> <span class="var">suivant</span>;    <span class="com">// erreur: récursivité interdite</span></code>
+				<code>};</code>
+			</pre>
+			<p>
+				Pour contourner cette limitation et vu l'importance des structures récursives dans les langages de programmation,
+				le C va utiliser les pointeurs sur structures (la taille d'un pointeur est une valeur connue) pour référencer une structure à l'intérieur d'elle-même. Comme dans l'exemple suivant:
+			</p>
+			<pre>
+				<code><span class="kwd">struct</span> <span class="str">Noeud</span> {</code>
+			    <code>    <span class="btyp">int</span> <span class="var">valeur</span>;</code>
+			    <code>    <span class="kwd">struct</span> <span class="str">Noeud</span> * <span class="var">suivant</span>;    <span class="com">// OK: récursivité par pointeur</span></code>
+				<code>}; </code>
+			</pre>
+
+			<h4>Champs de bits (<span class="it">bit fields</span>)</h4>
+			<p>
+				Il existe une utilisation particulière des structures, les <span class="hl">champs de bits</span> qui vont limiter les composants à un certains nombre de bits. 
+				En effet, il est parfois nécessaire pour un programmeur de décrire en termes de bits la structure d'une ressource matérielle de la machine. 
+				Un exemple typique est la programmation système qui nécessite de manipuler des registres particuliers de la machine.
+				Dans une déclaration de structure, il est possible de faire suivre la définition d'un membre par une indication du nombre de bits que doit avoir ce membre. 
+				Le langage C appelle cela un <i>champ de bits</i>:
+			</p>
+			<pre>
+				<code><span class="kwd">struct</span> <span class="str">Champ</span> {</code>
+			    <code>    <span class="btyp">unsigned</span> <span class="var">a</span>:<span class="nbr">4</span>;</code>
+			    <code>    <span class="btyp">unsigned</span>  :<span class="nbr">2</span>;    <span class="com">// composante inutilisés, sert de padding</span></code>
+			    <code>    <span class="btyp">unsigned</span> <span class="var">b</span>:<span class="nbr">5</span>;</code>
+			    <code>    <span class="btyp">unsigned</span> <span class="var">c</span>:<span class="nbr">5</span>;</code>
+				<code>};</code>
+			</pre>
+			<p>
+				L'accès à un champ se fait comme pour les structures classiques <span class="code">x.c</span>
+				mais il n'est pas permis de prendre l'adresse d'un tel champ (ex: <span class="code">&amp;x.c</span>).
+			</p>
+
+			<h4  id="struct_anonyme">Structures anonymes</h4>
+			<p>
+				Pour les structures utilisées ponctuellement, la spécification d'un tag est inutile. On peut écrire:
+			</p>
+			<pre>
+				<code><span class="kwd">struct</span> {</code>
+			   	<code>    <span class="btyp">int</span> <span class="var">x</span>, <span class="var">y</span>;</code>
+			   	<code>    <span class="btyp">double</span> <span class="var">d</span>;</code>
+				<code>} <span class="var">a</span>, <span class="var">b</span>, *<span class="var">p</span>;</code>
+			</pre>
+			<p>
+				Notez cependant que ces déclarations sont uniques: la même déclaration ailleurs dans le code créera un autre type et donc des variables incompatibles!
+			</p>
+
+			<h3>Enumérations</h3>
+			<p>
+				Un type <span class="hl">enuméré</span> est un type construit à partir d'un ensemble de valeurs spécifiées dans la définition de ce type.
+			</p>
+			<pre>
+				<code><span class="kwd">enum</span> <span class="enum">Couleur</span> {<span class="val">ROUGE</span>, <span class="val">VERT</span>, <span class="val">BLEU</span>, <span class="val">BLANC</span>, <span class="val">NOIR</span>};</code>
+			</pre>
+			<p>
+				définit un type <span class="code">enum Couleur</span>  et les différentes valeurs que peuvent prendre les variables de ce type.
+			</p>
+			<pre>
+				<code><span class="kwd">enum</span> <span class="enum">Couleur</span> <span class="var">maCouleur</span>, <span class="var">maFavorite</span>;</code>
+			</pre>
+			<p>
+				définit 2 variables de type <span class="code">enum Couleur</span>.
+			</p>
+			<p>
+				Les <span class="bo">identifiants</span> des valeurs énumérées respectent les règles du C pour les <a href="./langage.html#id_ide">identificateurs</a>. 
+				Par convention d'écriture et étant donné qu'il s'agit de valeurs constantes, les identifiants d'énumérations s'écrivent de préférence en majuscules. 
+				Ils s'utilisent seuls, sans spécifier le nom du type:
+			</p>
+			<pre>
+				<code><span class="var">maCouleur</span> = <span class="val">ROUGE</span>;</code>
+			</pre>
+			<p>
+				Ce sont en fait des <span class="hl">types entiers</span>, et chaque valeur déclarée dans le type correspond à une valeur entière.
+				<span class="code">ROUGE</span> vaut 0, <span class="code">VERT</span> 1, etc.
+				Et donc l'arithmétique sur les entiers peut s'appliquer à ce type
+			</p>
+			<pre>
+				<code><span class="var">maCouleur</span>++;</code>
+			</pre>
+			<p>
+				va recevoir la couleur <span class="code">VERT</span> ou
+			</p>
+			<pre>
+				<code><span class="var">maFavorite</span> = <span class="var">maCouleur</span> + <span class="val">BLEU</span>;</code>
+			</pre>
+			<p>
+				code tout à fait illisible et à déconseiller.
+			</p>
+			<p>Cette propriété des énumérations fait qu'elles sont fréquemment utilisées dans des <a href="./instructions.html#id_switch">switch</a>
+			(i.e. branchement multiple en fonction d'une valeur entière):</p>
+			<pre>
+				<code><span class="kwd">switch</span> (<span class="var">maCouleur</span>) {</code>
+				<code>    <span class="kwd">case</span> <span class="var">ROUGE</span> :</code>
+				<code>        <span class="com">// instructions1</span></code>
+				<code>        <span class="kwd">break</span>;</code>
+				<code>    <span class="kwd">case</span> <span class="var">JAUNE</span> :</code>
+				<code>        <span class="com">// instructions2</span></code>
+				<code>        <span class="kwd">break</span>;</code>
+				<code>    <span class="kwd">case</span> <span class="var">VERT</span> :</code>
+				<code>        <span class="com">// instructions3</span></code>
+				<code>        <span class="kwd">break</span>;</code>
+				<code>    <span class="kwd">default</span> :</code>
+				<code>        <span class="com">// instructions4</span></code>
+				<code>}</code>
+			</pre>
+
+			<p>
+				Notez pour finir que le type énuméré est souvent utilisé pour définir les constantes booléennes en C:
+			</p>
+			<pre>
+				<code><span class="kwd">enum</span> <span class="enum">Boolean</span> {<span class="val">FALSE</span>, <span class="val">TRUE</span>};</code>
+			</pre>
+			<p>
+				Etant donné qu'une énumération est de type entier, cette déclaration définit bien <span class="code">FALSE</span> à 0 et <span class="code">TRUE</span> à 1.
+			</p>
+
+			<h3>Unions</h3>
+			<p>
+				Une <span class="hl">union</span> est une structure où les champs se superposent en mémoire. Ces unions sont utilisées pour stocker dans une même zone mémoire
+				des valeurs de types différents, mais à des moments différents. Par exemple :
+			</p>
+			<pre>
+				<code><span class="kwd">union</span> <span class="uni">Exemple</span> {</code>
+			    <code>    <span class="btyp">int</span> <span class="var">a</span>;</code>
+			    <code>    <span class="btyp">double</span> <span class="var">b</span>;</code>
+			    <code>    <span class="btyp">char</span> *<span class="var">s</span>;</code>
+				};
+			</pre>
+			<p>
+				Une variable de ce type pourra contenir soit un <span class="code">int</span>, soit un <span class="code">double</span>, soit une chaîne (i.e. adresse sur un caractère).
+			</p>
+			<p>
+				Par conséquent, la taille d'une union est au moins égale à la taille du plus grand champ:
+			</p> 
+			<span class="code">sizeof(union)</span> &ge; max ( <span class="code">sizeof(composants)</span> )
+
+			<h4>Le bon usage des unions</h4>
+			<p>
+				L'union sera fréquemment utilisée en gérant un code identifiant le champ utilisé dans la variable.
+				Et donc on pourra avoir une <span class="bo">structure</span> reprenant l'union et le code indiquant le champ à considérer dans cette union. Par exemple:
+			</p>
+			<pre>
+				<code><span class="kwd">struct</span> <span class="uni">MonUnion</span> {</code>
+			    <code>    <span class="btyp">int</span> <span class="var">type</span>;    <span class="com">// 0 --> double, 1 --> int, 2 --> char</span></code>
+			    <code>    <span class="kwd">union</span> {</code>
+			    <code>        <span class="btyp">double</span> <span class="var">x</span>;</code>
+			    <code>        <span class="btyp">int</span> <span class="var">y</span>;</code>
+			    <code>        <span class="btyp">char</span> <span class="var">c</span>;</code>
+			    <code>    } <span class="var">u</span>;</code>
+				<code>} <span class="var">s</span>;</code>
+			</pre>
+			<p>
+				L'utilisation de la variable <span class="code">s</span> impliquera de spécifier le type :
+			</p>
+			<pre>
+				<code><span class="ppd">#define</span> <span class="mac">DOUBLE</span> <span class="nbr">0</span></code>
+				<code><span class="ppd">#define</span> <span class="mac">INT</span>    <span class="nbr">1</span></code>
+				<code><span class="ppd">#define</span> <span class="mac">CHAR</span>   <span class="nbr">2</span></code>
+				<code></code>
+				<code><span class="kwd">if</span> (<span class="var">s</span>.<span class="var">type</span> == <span class="val">DOUBLE</span>) {</code>
+			   	<code>    <span class="fct">traiter</span>(<span class="var">s</span>.<span class="var">u</span>.<span class="var">x</span>);</code>
+				<code>}</code>
+			</pre>
+			<!-- 
+			<p>Lorsque l'union est une union de structures,  pareille écriture alourdit le code</p>
+			<pre>struct maStruct {
+			    int type;
+			    union {
+			        struct un {
+			            int x, y;
+			        } un;
+			        struct deux {
+			            double a, b;
+			        } deux;
+			    } u;
+			} s;</pre>
+			<p>qui peut conduire à un code tel que</p>
+			<pre>#define UN	1
+			#define DEUX	2
+
+			double result;
+			if (s.type == UN){
+			    result = s.u.un.x + s.u.un.y;
+			} else if (s.type == DEUX){
+			    result = s.u.deux.x + s.u.deux.y;
+			}</pre>
+			<p>On préférera définir cette construction sous la forme</p>
+			<pre>union mienne {
+			    int type;
+			    struct un {
+			        int type;
+			        int x, y;
+			    } un;
+			    struct deux {
+			    	int type;
+			    	double a, b;
+			    } deux;
+			} u;</pre>
+			<p>Avec cette définition, ou le type est répété dans chaque union, l'accès à un composant est simplifié : </p>
+			<pre>
+			if (u.type == UN){
+			    result = u.un.x + u.un.y;
+			} else if (u.type == DEUX){
+			    result = u.deux.x + u.deux.y;
+			}</pre>
+			-->
+
+			<h3 id="id_typedef">typedef</h3>
+			<p>
+				Le mot-clé <span class="hl">typedef</span> permet de définir un synonyme d'un type existant. Par exemple 
+			</p>
+			<pre>
+				<code><span class="kwd">typedef</span> <span class="btyp">unsigned int</span> <span class="tde">size_t</span>;</code>
+			</pre>
+			<p>
+				définit un synonyme <span class="code">size_t</span> à un entier non signé <span class="code">unsigned int</span>.
+			</p>
+			<p>
+				L'utilisation de <span class="code">typedef</span> ne crée pas un nouveau type (avec tous les contrôles et tests effectués par le compilateur),
+				mais il aide à la lecture et à la compréhension du code.
+			</p>
+			<p>
+				L'usage de <span class="code">typedef</span> est recommandé pour simplifier l'écriture de types complexes, comme les structures.
+				Nous trouverons donc fréquemment le renommage de structures via <span class="code">typedef</span>.
+			</p>
+			<pre>
+				<code><span class="kwd">struct</span> <span class="str">Point</span> {</code>
+			    <code>    <span class="btyp">int</span> <span class="var">abscisse</span>;</code>
+			    <code>    <span class="btyp">int</span> <span class="var">ordonnees</span>;</code>
+				<code>};</code>
+				<code><span class="kwd">typedef struct</span> <span class="str">Point</span> <span class="tde">Point</span>;</code>
+			</pre>
+			<p>
+				Il n'y a pas de confusion entre les deux noms <span class="code">Point</span> car ils sont utilisés dans deux
+				<a href="./classes.html#id_clas"> classes de nommage</a> différentes (<span class="code">Point</span> et <span class="code">struct Point</span>).
+			</p>
+			<p>
+				Voici une version plus condensée:
+			</p>
+			 <pre>
+			 	<code><span class="kwd">typedef struct</span> <span class="str">Point</span> {</code>
+			    <code>    <span class="btyp">int</span> <span class="var">abscisse</span>;</code>
+			    <code>    <span class="btyp">int</span> <span class="var">ordonnee</span>;</code>
+				<code>} <span class="tde">Point</span>;</code>
+			</pre>
+			<p>
+				ou de façon encore plus condensée (notez qu'une telle <a href="./structures.html#struct_anonyme">structure anonyme</a> ne conviendra pas dans le cas de structures récursives):
+			</p>
+			 <pre>
+			 	<code><span class="kwd">typedef struct</span> {</code>
+			    <code>    <span class="btyp">int</span> <span class="var">abscisse</span>;</code>
+			    <code>    <span class="btyp">int</span> <span class="var">ordonnee</span>;</code>
+				<code>} <span class="tde">Point</span>;</code>
+			</pre>
+			<p>
+				Pour terminer, remarquez que grâce à <span class="code">typedef</span>, le type booléen (qui n'existe pas en ANSI C mais a été introduit 
+				par la norme C99 via la librairie standard <a href="./langage.html#id_bool-typ">stdbool.h</a>) peut être simplement défini grâce à l'instruction:
+			</p>
+			<pre>
+				<code><span class="kwd">typedef enum</span> {<span class="val">FALSE</span>, <span class="val">TRUE</span>} <span class="tde">Boolean</span>;</code>
+				<code>...</code>
+				<code><span class="tde">Boolean</span> <span class="var">valid</span> = <span class="val">TRUE</span>;   <span class="com">// définition d'une variable booléenne</span></code>
+			</pre>
+
+		</section>
+	</section>
+
+	<footer>
+		<p id="copyright"> <a href="mailto:anthony.legrand@vinci.be">Anthony Legrand</a> &copy; 2018 <a href="http://www.ipl.be"><img src="../images/ipl_bleu.png" alt="logo ipl" /></a></p>
+	</footer>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

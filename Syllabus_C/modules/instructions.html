@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Legrand Anthony, Verriest Anthony">
+    <meta name="description" content="Syllabus langage C">
+    <meta name="keywords" content="Programmation, Langage C">
+	<title>Cours de Langage C</title>
+	<link rel="stylesheet" type="text/css" href="../css/base.css">
+	<link rel="stylesheet" type="text/css" href="../css/layout.css">
+	<link rel="stylesheet" type="text/css" href="../css/modules.css">
+</head>
+<body>
+	<header id="header">
+		<h1>Le langage C</h1>
+	</header>
+
+	<!--Navigation bar-->
+	<nav class="sticky-nav">
+		<nav class="nav">
+			<a href="../index.html">Introduction</a>
+	  		<div class="dropdown">
+	    		<button class="dropdownbtn">Cours &#x25BC;</button>
+	    		<div class="dropdown-content">
+	    			<div class="dropdown-content-in">
+						<a href="./langage.html">1. Éléments du langage</a>
+						<a href="./instructions.html">2. Instructions</a>
+						<a href="./tableaux.html">3. Tableaux</a>
+						<a href="./pointeurs.html">4. Pointeurs</a>
+						<a href="./chaines.html">5. Chaînes de caractères</a>
+						<a href="./entrees-sorties.html">6. Entrées-sorties</a>
+						<a href="./fonctions.html">7. Fonctions</a>
+					</div>
+					<div class="dropdown-content-in">
+						<a href="./modularisation.html">8. Modularisation</a>
+						<a href="./structures.html">9. Structures et autres types utilisateurs</a>
+						<a href="./fichier.html">10. Fichiers</a>
+						<a href="./classes.html">11. Classes d'allocation</a>
+						<a href="./preprocesseur.html">12. Préprocesseur [TODO]</a>
+						<a href="./librairies.html">13. Librairies [TODO]</a>
+					</div>
+	    		</div>
+	  		</div> 
+	  		<a href="./lexique.html">Index [TODO]</a>
+		</nav>
+	</nav>
+
+	<!--Main Content-->
+	<section id="main">
+		<!-- <h2 class="title"><center>2. Instructions</center></h2> -->
+
+		<section id="content">
+			<button onclick="topFunction()" id="top" title="Remonter">&#x21ea;</button>
+
+			<h2 class="title"><center>2. Instructions</center></h2>
+			<p>
+				Le langage C est un <span class="bo">langage structuré</span>.
+			</p>
+			<p>
+				Un programme écrit en C est composé d'une suite d'instructions
+				pouvant être  une <a href = "#id_instSimple">instruction simple</a>,
+				une <a href="#id_instBloc">bloc d'instructions</a>, 
+				une <a href="#id_instRep">répétitive</a> ou 
+				une <a href="#id_instAlt">alternative</a>.
+				Le C permet également l'écriture de fonctions.
+			</p>
+
+			<h3 id="id_instSimple">Les instructions simples</h3>
+			<ul>
+				<li>
+					<p>
+						Le C accepte l'usage de l'<span class="it">instruction nulle</span> (ou <span class="it">instruction vide</span>), marquée par le caractère <span class="hl">';'</span>, le terminateur d'instructions. 
+					</p>
+					<pre>
+						<code>;    <span class="com">/* instruction nulle */</span></code>
+					</pre>
+				</li>
+				<li>
+					<p>
+						Il permet également l'utilisation de l'<span class="it">instruction-expression</span>, qui évalue l'expression pour ses effets de bord.
+					</p>
+					<pre>
+						<code><span class="nbr">20</span> + <span class="nbr">2</span>*<span class="var">b</span>;    <span class="com">/* instruction sans effet de bord: évaluation puis oubli du résultat */</span></code>
+						<code><span class="var">a</span> = <span class="nbr">20</span> + <span class="nbr">2</span>*<span class="var">b</span>;    <span class="com">/* instruction avec effet de bord: évaluation puis affectation du résultat à une variable */</span></code>
+					</pre>		
+					<p>
+						Nous rencontrerons essentiellement trois cas d'utilisation :
+					</p>
+					<ul class="d-cir">
+						<li>
+							<p>
+								Les affectations 
+							</p>
+							<pre>
+								<code><span class="var">a</span> = <span class="var">b</span> * <span class="var">c</span>;</code>
+							</pre>
+						</li>
+						<li>
+							<p>
+								Les pré ou post incrémentations et décrémentations
+							</p> 
+							<pre>
+								<code><span class="var">a</span>++; <span class="var">a</span>--; ++<span class="var">a</span>; --<span class="var">a</span>;</code>
+							</pre>
+						</li>
+						<li>
+							<p>
+								Et les appels de fonction de type void ou dont la valeur de retour  n'est pas exploitée
+							</p>
+							<pre>
+								<code><span class="fct">printf</span>(...);</code>
+							</pre>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<p>
+						<span class="hl">break</span> : instruction qui permet de quitter une branche du <span class="it">switch</span> ou de sortir d'une répétitive directement, sans réévaluer la condition.
+					</p>
+				</li>
+				<li>
+					<p>
+						<span class="hl">continue</span> : instruction utilisée uniquement dans les répétitives,
+						elle permet de sauter la suite du corps de la répétitive
+						et de passer directement à une nouvelle vérification de la condition; dans un <span class="it">for</span>, elle permet l'exécution de l'adaptation.
+					</p>
+				</li>
+			</ul>
+
+			<h3 id="id_instBloc">Le bloc d'instructions</h3>
+			<p>
+				Lorsque plusieurs instructions doivent être traitées conjointement,
+				elles sont regroupées en un bloc d'instructions encadrés par une paire d'accolades <span class="hl">'{'</span> et <span class="hl">'}'</span>.
+			</p>
+			<pre>   
+				<code>{</code>
+				<code>    <span class="com">// instr1</span></code>
+				<code>    <span class="com">// instr2</span></code>
+				<code>    ...</code>
+			   	<code>}</code> 
+			</pre>
+			<p>
+				Du point de vue de la syntaxe, un bloc se comporte comme une instruction unique et peut figurer en tout endroit où une instruction 
+				simple est permise. Il n'est pas suivi par le ';' car les accolades servent de délimiteurs.
+			</p>
+			<p>
+				Un bloc d'instructions peut débuter par la définition d'un certain nombres de variables, locales à ce bloc d'instructions 
+				(i.e. leur existence se termine à la fin du bloc).
+			</p>
+			<pre>   
+				<code>{</code>
+			    <code>    <span class="com">// définition de variables</span></code>
+				<code></code>
+			    <code>    <span class="com">// liste d'instructions</span></code>
+			   	<code>}</code>
+			</pre>
+			<p>
+				Attention: La norme ANSI-C (C90) oblige les variables à être toujours déclarées avant la première instruction du bloc. Cette contrainte a été levée 
+				depuis la norme C99. Cependant le mélange de déclarations et d'instructions n'est pas recommandé afin de préserver la lisibilité du code.
+			</p>
+			<p>
+				Si un identificateur redéfinit un variable déjà existante, la nouvelle variable occulte l'ancienne, définie dans un bloc englobant.
+				Dans l'exemple suivant,
+			</p>
+			<pre> 
+				<code>{</code>
+				<code>    <span class="com">// bloc englobant</span></code>
+				<code>    <span class="btyp">int</span> <span class="var">i</span> = <span class="nbr">5</span>;</code>
+				<code>    {</code>
+				<code>        <span class="com">// sous-bloc</span></code>
+				<code>        <span class="btyp">int</span> <span class="var">i</span> = <span class="nbr">7</span>;</code>
+				<code>        <span class="fct">printf</span>(<span class="stn">"i vaut %d\n"</span>, <span class="var">i</span>++);</code>
+				<code>    }</code>
+				<code><span class="fct">    printf</span>(<span class="stn">"i vaut %d\n"</span>, <span class="var">i</span>);</code>
+				<code>}</code>
+			</pre>
+			<p>
+				l'affichage donnera:
+			</p>
+			<pre>
+				i vaut 7
+				i vaut 5
+			</pre>
+			<p>
+				Notez que les instructions imbriquées (que ce soit dans un bloc ou dans une structure de contrôle 
+				de type alternative ou répétitive) sont <span class="bo">indentées</span> à l’aide de tabulations ou d'espaces, de façon homogène dans tous les fichiers 
+				sources d'un projet. Cette convention d'écriture facilite la maintenance et la relecture des sources.
+			</p>
+
+			<h3 id="id_instRep">Les répétitives</h3>
+			<p>
+				Le langage C connaît différents type de répétitives: le <a href="#id_while">while</a>, le <a href="#id_for">for</a>
+				et le <a href="#id_do">do ... while</a>.
+				Toutes ces répétitives utilisent une condition de continuation, c-à-d que l'itération suivante est réalisée si la condition testée vaut VRAI.
+				En d'autres mots, la boucle se termine lorsque la condition devient FAUX.
+			</p>
+
+			<h4 id="id_while">while</h4>
+			<p>
+				Cette répétitive est utilisée lorsque l'on désire répéter plusieurs fois une instruction (ou un bloc d'instructions).
+				La condition est vérifiée avant d'entamer l'itération et donc si la condition est directement FAUX, l'instruction n'est pas exécutée.
+			</p>
+			<pre>
+				<code><span class="kwd">while</span> (<span class="var">cdt</span>)</code>
+			    <code>    <span class="com">// instruction</span></code>
+			</pre>
+			<p>Ou</p>
+			<pre>
+				<code><span class="kwd">while</span> (<span class="var">cdt</span>) {</code>
+			    <code>    <span class="com">// instruction1</span></code>
+			    <code>    <span class="com">// instruction2</span></code>
+				<code>}</code>
+			</pre>
+			<p>
+				Pour éviter toute ambiguité, une répétitive sans instruction s'écrira comme suit (en utilisant une instruction nulle):
+			</p>
+			<pre>
+				<code><span class="kwd">while</span> (<span class="var">cdt</span>)</code>
+			    <code>    ;</code>
+			</pre>
+			<p>
+				Dans l'exemple suivant, nous effectuons une lecture sur l'entrée standard <span class="bo">stdin</span> et quittons la répétitive lorsque l'utilisateur 
+				introduit la fin des données.
+			</p>
+			<pre>
+				<code><span class="btyp">char</span> <span class="var">ligne</span>[<span class="nbr">256</span>];</code>
+				<code><span class="kwd">while</span> (<span class="fct">fgets</span>(<span class="var">ligne</span>, <span class="nbr">256</span>, <span class="sds">stdin</span>) != <span class="mac">NULL</span>) {</code>
+			   	<code>    <span class="fct">printf</span>(<span class="stn">"%s"</span>, <span class="var">ligne</span>);</code>
+				<code>}</code>
+			</pre> 
+
+			<h4 id="id_do">do ... while</h4>
+			<p>
+				Cet autre type de répétitive s'emploie très rarement, uniquement lorsque l'on est certain que la répétitive doit s'exécuter 
+				au moins une fois. Pour éviter toute confusion avec le <span class="it">while</span>, il est recommandé de respecter les conventions suivantes :
+			</p>
+			<ul>
+				<li>
+					<p>
+						On mettra toujours les instructions entre accolades, même si il n'y a qu'une seule instruction dans le bloc.
+					</p>
+				</li>
+				<li>
+					<p>
+						L'accolade fermante sera écrite sur la même ligne que le <span class="it">while</span>.
+					</p>
+				</li>
+				<li>
+					<p>
+						On placera toujours le point virgule directement après la condition, sur la même ligne, pour éviter toute confusion 
+						avec le <span class="it">while</span> instruction nulle.
+					</p>
+				</li>
+			</ul>
+			<pre>
+				<code><span class="kwd">do</span> {</code>
+				<code>    <span class="com">// instruction</span></code>
+				<code>} <span class="kwd">while</span> (<span class="var">cdt</span>);</code>
+			</pre>
+
+			<h4 id="id_for">for</h4>
+			<p>
+				Le <span class="it">for</span> est une écriture condensée du <span class="it">while</span>. Il est constitué de 3 parties : l'<span class="hl">initialisation</span>, la <span class="hl">condition</span> 
+				et l'<span class="hl">adaptation</span>.
+			</p>
+			<p>
+				L'<span class="bo">initialisation</span> est exécutée à l'entame de la répétitive, une seule fois au début de l'exécution de la répétitive; 	
+				si plusieurs expressions doivent composer cette initialisation, elles sont séparées par une virgule '<span class="hl">,</span>'. 
+			</p>
+			<p>
+				La <span class="bo">condition</span> est une condition de continuation, elle est exécutée une première fois juste après l'initialisation 
+				(et donc le corps de la répétitive peut ne pas etre exécuté) et à chaque nouvelle répétition de la boucle.
+			</p>
+			<p>
+				L'<span class="bo">adaptation</span> est exécutée à la fin de chaque itération, juste avant une nouvelle évaluation de la condition.
+			</p>
+			<pre>
+				<code><span class="kwd">for</span> (<span class="btyp">int</span> <span class="var">i</span> = <span class="nbr">0</span>; <span class="var">i</span> &lt; <span class="nbr">5</span>; <span class="var">i</span>++) {</code>
+			   	<code>    <span class="fct">printf</span>(<span class="stn">"%d\n"</span>, <span class="var">i</span>);</code>
+				<code>}</code>
+			</pre>
+			<p>
+				Bien que l'ANSI-C l'interdise, la définition de variables locales dans l'initialisation d'un <span class="it">for</span> est autorisée dans les normes suivantes.
+				Cette fonctionnalité entraîne la possibilité de créer une variable de boucle temporaire pour l'instruction <span class="it">for</span>: 
+			</p>
+			<pre>
+			    <code>{</code>
+			   	<code>    <span class="kwd">for</span> (<span class="btyp">int</span> <span class="var">i</span> = <span class="nbr">0</span>; <span class="var">i</span> &lt; <span class="nbr">10</span>; <span class="var">i</span>++)</code>   	
+			    <code>    {</code>
+				<code>        <span class="com">// variable i utilisable uniquement dans la boucle for</span></code>
+			    <code>    }</code>
+			    <code>    <span class="com">// variable i inexistante</span></code>
+				<code>}</code>
+			</pre>
+			<p>
+				Ce code restreint l'utilisation de la variable compteur au corps de la boucle <span class="it">for</span>, contrairement à l'écriture:
+			</p>
+			<pre>
+				<code>{</code>
+			    <code>    <span class="btyp">int</span> <span class="var">i</span>;</code>
+			    <code></code>
+			    <code>    <span class="kwd">for</span> (<span class="var">i</span> = <span class="nbr">0</span>; <span class="var">i</span> &lt; <span class="nbr">10</span>; <span class="var">i</span>++)</code>
+			    <code>    {</code>
+			    <code>        <span class="com">// variable i utilisable</span></code>
+			    <code>    }</code>
+			    <code>    <span class="com">// variable i utilisable</span></code>
+				<code>}</code>
+				<code><span class="com">// variable i inexistante</span></code>
+			</pre>
+
+			<p>
+				<span class="un">Remarque</span>: D'un point de vue algorithmique, il est interdit de modifier la variable compteur ('i' dans l'exemple précédent) dans le corps 
+				d'une boucle <span class="it">for</span> car cette structure de contrôle applique automatiquement l'adaptation du compteur (ici l'incrémentation i++) à chaque tour de boucle.
+			</p>
+			<p>
+				<span class="un">Remarque</span>: Une boucle <span class="it">for</span> peut s'écrire de manière parfaitement équivalente à l'aide d'une boucle <span class="it">while</span>. 
+				Ainsi, si l'on reprend la boucle <span class="it">for</span> du dernier exemple:
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">i</span> = <span class="nbr">0</span>;    <span class="com">// initialisation</span></code>
+				<code><span class="kwd">while</span> (<span class="var">i</span>&lt;<span class="nbr">5</span>) {    <span class="com">// condition de continuation</span></code>
+				<code>    <span class="fct">printf</span>(<span class="stn">"%d\n"</span>, <span class="var">i</span>);</code>
+				<code>    <span class="var">i</span>++;    <span class="com">// adaptation</span></code>
+				<code>}</code>
+			</pre>	
+			<p>
+				Dans ce cas, quand doit-on utiliser un <span class="it">for</span> et quand doit-on utiliser un <span class="it">while</span>? Simple: on utilise la boucle <span class="it">for</span>
+				quand on connaît à l'avance le nombre de répétitions de la boucle et on utilise le plus souvent la boucle <span class="it">while</span> quand on ne sait pas 
+				combien de fois la boucle va être exécutée.
+			</p>
+
+			<h3 id="id_instAlt">Les alternatives</h3>
+			<p>
+				C connaît deux types de traitements conditionnels: les <a href="#id_if">alternatives</a>, qui permettent de réaliser ou pas un traitement 
+				en fonction d'une condition, et les <a href="#id_switch">switch</a>, qui réalisent un traitement en fonction du contenu d'une variable 
+				dénombrable (entière).
+			</p>
+
+			<h4 id="id_if">if</h4>
+			<p>
+				Plusieurs syntaxes sont possibles pour marquer une alternative: soit l'alternative simple
+			</p>
+			<pre>
+				<code><span class="kwd">if</span> (<span class="var">cdt</span>)</code>
+				<code>    <span class="com">// instruction</span></code>
+			</pre>
+			<p>
+				soit la forme avec accolades (indispensables si le bloc est composé de plusieurs instructions ; optionnelles si le bloc 
+				est composé d'une instruction simple)
+			</p>
+			<pre>
+				<code><span class="kwd">if</span> (<span class="var">cdt</span>) {</code>
+			   	<code>    <span class="com">// instruction</span></code>
+				<code>}</code>
+			</pre>
+			<p>
+				et les <span class="hl">if</span> <span class="hl">else</span>
+			</p>
+			<pre>
+				<code><span class="kwd">if</span> (<span class="var">cdt</span>) {</code>
+				<code>    <span class="com">// instruction1</span></code>
+				<code>} <span class="kwd">else</span> {</code>
+				<code>    <span class="com">// instruction2</span></code>
+				<code>}</code>
+			</pre>
+			<p>
+				Attention au problème du <span class="it">dangling else</span>: le <span class="hl">else</span> se rapporte toujours au dernier <span class="hl">if</span> libre qui le précède 
+				et dans le même bloc (quelle que soit l'indentation utilisée par le programmeur). 
+			</p>
+			<pre>
+				<code><span class="kwd">if</span> (<span class="var">a</span>&gt;<span class="var">b</span>) {</code>
+				<code>    <span class="kwd">if</span> (<span class="var">c</span>&gt;<span class="var">d</span>) {</code>
+				<code>        <span class="kwd">if</span> (<span class="var">c</span>&gt;<span class="nbr">0</span>)</code>
+				<code>             <span class="var">c</span>++;</code>
+				<code>    <span>}</span> <span class="kwd">else</span></code>
+				<code>        <span class="var">d</span>++;</code>
+				<code>} <span class="kwd">else</span></code>
+				<code>    <span class="var">a</span>++;</code>
+			</pre>
+
+			<h4 id="id_switch">switch</h4>
+			<p>
+				Le <span class="hl">switch</span> peut être considéré comme un branchement multiple en fonction d'une valeur entière. Dès que l'on est aiguillé 
+				vers une branche, le traitement se poursuit en séquence. Cela signifie que toutes les instructions qui suivent le <span class="it">case</span> sont exécutées, 
+				jusqu'à la fin du bloc ou jusqu'à une instruction de rupture <span class="hl">break</span> qui permet de quitter la structure de contôle.
+			</p>
+			<pre>
+				<code><span class="kwd">switch</span> (<span class="var">exp</span>) {</code>
+				<code>    <span class="kwd">case</span> <span class="var">val1</span> :</code>
+				<code>    <span class="kwd">case</span> <span class="var">val2</span> :</code>
+				<code>        <span>...</span>     <span class="com">// instructions exécutées si exp = val1 ou val2</span></code>
+				<code>        <span class="kwd">break</span>;</code>
+				<code>    <span class="kwd">case</span> <span class="var">val3</span> :</code>
+				<code>        <span>...</span>     <span class="com">// instructions exécutées si exp = val3</span></code>
+				<code>    <span class="kwd">case</span> <span class="var">val4</span> :</code>
+				<code>         <span>...</span>     <span class="com">// instructions exécutées si exp = val4 ou val3</span></code>
+				<code>         <span class="kwd">break</span>;</code>
+				<code>    <span class="kwd">default</span> :</code>
+				<code>        <span>...</span>     <span class="com">// instructions exécutées si exp &lt;&gt; val1, val2, val3, val4</span></code>
+				<code>}</code>
+			</pre>
+			<p>
+				<span class="un">Remarque</span>: Si l'expression du <span class="it">switch</span> ne vaut aucune des valeurs <span class="it">case</span> ou qu'aucun <span class="it">break</span> n'a été exécuté, 
+				c'est la clause <span class="hl">default</span> qui sera exécutée.
+			</p>
+			<p>
+				Remarquez qu'une instruction <span class="it">switch</span> classique, telle que:
+			</p>
+			<pre>
+				<code><span class="kwd">switch</span> (<span class="var">exp</span>) {</code>
+				<code>    <span class="kwd">case</span> <span class="var">val1</span> :</code>
+				<code>        <span class="com">// instructions1</span></code>
+				<code>        <span class="kwd">break</span>;</code>
+				<code>    <span class="kwd">case</span> <span class="var">val2</span> :</code>
+				<code>        <span class="com">// instructions2</span></code>
+				<code>        <span class="kwd">break</span>;</code>
+				<code>    <span class="kwd">case</span> <span class="var">val3</span> :</code>
+				<code>        <span class="com">// instructions3</span></code>
+				<code>        <span class="kwd">break</span>;</code>
+				<code>    <span class="kwd">default</span> :</code>
+				<code>        <span class="com">// instructions4</span></code>
+				<code>}</code>
+			</pre>
+			<p>
+				peut être exprimée à l'aide d'instructions <span class="it">if</span> imbriquées:
+			</p>
+			<pre>
+				<code><span class="kwd">if</span> (<span class="var">exp</span> == <span class="var">val1</span>) {</code>
+		    	<code>    <span class="com">// instructions1</span></code>
+				<code>} <span class="kwd">else if</span> (<span class="var">exp</span> == <span class="kwd">val2</span>) {</code>
+				<code>    <span class="com">// instructions2</span></code>
+				<code>} <span class="kwd">else if</span> (<span class="var">exp</span> == <span class="var">val3</span>) {</code>
+				<code>    <span class="com">// instructions3</span></code>
+				<code>} <span class="kwd">else</span> {</code>
+				<code>    <span class="com">// instructions4</span></code>
+				<code>}</code>
+			</pre>
+			<p>
+				Notez que pareille imbrication ne nécessite pas d'augmenter l'indentation de chaque nouveau <span class="it">if</span>. Cette convention d'écriture exprime simplement
+				le fait qu'un seul traitement du branchement conditionnel sera exécuté. Tous les traitements sont donc écrits sur le même niveau d'indentation. 
+				Bien que ces deux écritures peuvent être considérées comme équivalentes, l'utilisation d'un <span class="it">switch</span> sera préférée car plus simple et plus lisible.
+			</p>
+
+		</section>
+	</section>
+
+	<footer>
+		<p id="copyright"> <a href="mailto:anthony.legrand@vinci.be">Anthony Legrand</a> &copy; 2018 <a href="http://www.ipl.be"><img src="../images/ipl_bleu.png" alt="logo ipl" /></a></p>
+	</footer>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

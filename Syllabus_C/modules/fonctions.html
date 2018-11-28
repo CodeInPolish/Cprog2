@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Legrand Anthony, Verriest Anthony">
+    <meta name="description" content="Syllabus langage C">
+    <meta name="keywords" content="Programmation, Langage C">
+    <title>Cours de Langage C</title>
+	<link rel="stylesheet" type="text/css" href="../css/base.css">
+	<link rel="stylesheet" type="text/css" href="../css/layout.css">
+	<link rel="stylesheet" type="text/css" href="../css/modules.css">
+</head>
+<body>
+	<header id="header">
+		<h1>Le langage C</h1>
+	</header>
+
+	<!--Navigation bar-->
+	<nav class="sticky-nav">
+		<nav class="nav">
+			<a href="../index.html">Introduction</a>
+	  		<div class="dropdown">
+	    		<button class="dropdownbtn">Cours &#x25BC;</button>
+	    		<div class="dropdown-content">
+	    			<div class="dropdown-content-in">
+						<a href="./langage.html">1. Éléments du langage</a>
+						<a href="./instructions.html">2. Instructions</a>
+						<a href="./tableaux.html">3. Tableaux</a>
+						<a href="./pointeurs.html">4. Pointeurs</a>
+						<a href="./chaines.html">5. Chaînes de caractères</a>
+						<a href="./entrees-sorties.html">6. Entrées-sorties</a>
+						<a href="./fonctions.html">7. Fonctions</a>
+					</div>
+					<div class="dropdown-content-in">
+						<a href="./modularisation.html">8. Modularisation</a>
+						<a href="./structures.html">9. Structures et autres types utilisateurs</a>
+						<a href="./fichier.html">10. Fichiers</a>
+						<a href="./classes.html">11. Classes d'allocation</a>
+						<a href="./preprocesseur.html">12. Préprocesseur [TODO]</a>
+						<a href="./librairies.html">13. Librairies [TODO]</a>
+					</div>
+	    		</div>
+	  		</div>
+	  		<a href="./lexique.html">Index [TODO]</a> 
+		</nav>
+	</nav>
+
+	<section id="main">
+		<!-- <h2 class="title"><center>7. Fonctions</center></h2> -->
+
+		<section id="content">
+			<button onclick="topFunction()" id="top" title="Remonter">&#x21ea;</button>
+
+			<h2 class="title"><center>7. Fonctions</center></h2>
+
+			<p>
+				Une fonction, est une sous-routine, un morceau de programme qui s'exécute indépendemment du déroulement de l'application principale.
+				L'intérêt d'utiliser des fonctions dans les programmes réside dans la simplification du code 
+				liée à l'isolement en parties distinctes, fonctionnelles de certains traitements.
+				Un autre avantage induit par l'utilisation de fonctions est la réutilisation possible du code à plusieurs endroits de l'application
+				et même dans différents programmes.
+				De plus, les fonctions peuvent cacher des détails d'implémentation et ainsi clarifier le déroulement principal de l'application.
+			</p>
+			<p>
+				Pour créer des fonctions dans un programme C, il est nécessaire
+				d'une part d'en <a href="#id_dec">déclarer</a> le <span class="hl">prototype</span> en début de fichier
+				et d'autre part de les <a href="#id_def">définir</a> en fin de fichier, après la fonction <span class="code">main</span>.
+			</p>
+
+			<h3 id="id_dec">La déclaration des fonctions</h3>
+			<p>
+				Le prototype d'une fonction se déclare toujours en début de fichier, soit dans un fichier d'<span class="it">include</span>, soit directement dans le fichier source.
+				Cette déclaration permet de renseigner le compilateur sur les caractéristiques de la fonction :
+				la liste des paramètres, en précisant leur type, et le type de la fonction, càd. le type de la valeur de retour.
+				Par exemple la déclaration suivante
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="fct">fct</span> (<span class="btyp">int</span>, <span class="btyp">char</span>);</code>
+			</pre>
+			<p>
+				annonce au compilateur que <span class="code"> fct</span> est une fonction de type <span class="code">int</span>,
+				càd. qu'elle retourne une valeur <span class="code">int</span> et
+				qu'elle utilise 2 paramètres, le premier de type <span class="code">int</span> et le deuxième de type <span class="code">char</span>.
+			</p>
+			<p>
+				Une fonction qui n'utilise aucun paramètre sera éventuellement déclarée avec une liste de paramètres valant <span class="hl">void</span>. 
+				Tandis qu'une fonction qui accepte un nombre variable de paramètres pourra spécifier une liste indéterminée de paramètres:
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="fct">fct</span> (<span class="var">param1</span>, <span class="var">param2</span>, ...);</code>
+			</pre>
+			<p>
+				Par défaut, si une fonction n'est pas déclarée, cette fonction sera considérée par le compilateur de type <span class="code">int</span>,
+				ce qui pourra conduire à des incompatibilités.
+			</p>
+
+			<h3 id="id_def">La définition des fonctions</h3>
+			<p>
+				Outre la <a href="#id_par">liste des paramètres</a>
+				ainsi que son <a href="#id_ret">type</a>, 
+				la définition d'une fonction reprend le code de la fonction. Le code est en fait un bloc d'instructions, placé entre les caractères <span class="hl">{</span> et <span class="hl">}</span>.
+			</p>
+			<p>
+				Les fonctions sont définies de manière indépendante, càd. qu'il n'est pas permis d'imbriquer une fonction à l'intérieur d'une autre fonction 
+				pour en restreindre l'usage. Elles sont toujours définies après la fonction <span class="code">main</span>.
+			</p>
+
+			<h3 id="id_par">Les paramètres des fonctions</h3>
+			<p>
+				Les paramètres d'une fonction sont des variables locales à la fonction qui reçoivent une valeur d'initialisation provenant du programme appelant.
+			</p>
+			<p>
+				Comme vous l'avez vu au cours de langage d'assemblage, lors de l'appel de la fonction, 
+				les paramètres sont copiés sur la pile du processeur;  à la fin de la fonction, les données de la fonction sont effacées de la pile 
+				avec comme conséquence que les paramètres sont perdus.
+			</p>
+			<p>
+				On dit que le passage des paramètres en C se fait <span class="hl">par valeur</span>: le paramètre reçoit une valeur mais ne retourne aucun résultat au sortir de la fonction.
+				Une fonction ne peut donc pas modifier la valeur de ses paramètres.
+			</p>
+			<img alt="pile" src="../images/fct1.png" width="500"/> 
+
+			<p>
+				L'exemple suivant illustre ce mécanisme. La fonction <span class="code">swap</span> doit permutter le contenu de 2 variables.
+				La première version de cette fonction :
+			<pre>
+				<code><span class="kwd">void</span> <span class="fct">swap</span> (<span class="btyp">int</span> <span class="var">a</span>, <span class="btyp">int</span> <span class="var">b</span>) {    <span class="com">// fonction qui échange le contenu de 2 variables </span></code>
+			    <code>    <span class="btyp">int</span> <span class="var">temp</span> = <span class="var">a</span>;</code>
+			    <code>    <span class="var">a</span> = <span class="var">b</span></code>;
+			    <code>    <span class="var">b</span> = <span class="var">temp</span>;</code>
+				<code>}</code>
+			</pre>
+			<p>
+				ne fonctionne pas. L'appel de cette fonction
+			</p> 
+			<pre>
+				<code><span class="fct">swap</span>(<span class="var">varA</span>, <span class="var">varB</span>);</code>
+			</pre>
+			<p>
+				ne produit aucun résultat
+				car les valeurs permutées sont dans les paramètres <span class="code">a</span> et <span class="code">b</span>
+				et pas dans les variables <span class="code">varA</span> et <span class="code">varB</span>.
+				Le changement intervenu durant le déroulement de la fonction reste local.
+				A la fin de la fonction, les données locales sont perdues.
+			</p>
+			<img alt="pile" src="../images/fct2.png" width="500"/>
+			<p>
+				Or, il est fréquent qu'une fonction doive retourner plus d'une valeur. Dans ce cas, le résultat de la fonction renvoyé par <span class="code">return</span>
+				ne suffit pas. Il est nécessaire qu'une telle fonction puisse utiliser des paramètres <span class="hl">in-out</span>.
+			</p>
+			<p>
+				En C, puisque les paramètres sont passés par valeur, il faut utiliser comme paramètres les adresses des variables qui doivent être modifiées par la fonction.
+				Les paramètres doivent dès lors être des <span class="hl">pointeurs</span>.
+			</p>
+			<p>
+				Nous pouvons donc réécrire la fonction <span class="code">swap</span> en utilisant des pointeurs: 
+			</p>
+			<pre>
+				<code><span class="kwd">void</span> <span class="fct">swap</span> (<span class="btyp">int</span> *<span class="var">a</span>, <span class="btyp">int</span> *<span class="var">b</span>) {    <span class="com">// fonction qui échange valablement le contenu de 2 variables</span></code>
+				<code>    <span class="btyp">int</span> <span class="var">temp</span> = *<span class="var">a</span>;</code>
+				<code>    *<span class="var">a</span> = *<span class="var">b</span>;</code>
+				<code>    *<span class="var">b</span> = <span class="var">temp</span>;</code>
+				<code>}</code> 
+			</pre>
+			<p>
+				L'appel de cette fonction
+			</p>
+			<pre>
+				<code><span class="fct">swap</span>(&amp;<span class="var">varA</span>, &amp;<span class="var">varB</span>);</code>
+			</pre>
+			<p>
+				va produire le résultat attendu.
+				En effet, si les adresses des variables <span class="code">varA</span> et <span class="code">varB</span> ne changent pas (passage par valeur), 
+				leur contenu lui a bien été modifié grâce à l'utilisation des pointeurs.
+			</p>
+			<img alt="pile" src="../images/fctPtr.png" width="530"> 
+
+			<h3 id="id_ret">Le type de la fonction</h3>
+			<p>
+				Une fonction peut soit retourner une valeur à la fonction appelante, attention pas de tableau, soit ne rien retourner;
+				dans ce cas certains langages les appellent "procédures", elle sera dite de type <span class="hl"> void</span>.</p>
+			<pre>
+				<code><span class="kwd">void</span> <span class="fct">itoa</span> (<span class="btyp">int</span> <span class="var">a</span>) {</code>
+			    <code>    <span class="fct">printf</span>(<span class="stn">"%d"</span>, <span class="var">a</span>);</code>
+			    <code>    <span class="kwd">return</span>;</code>
+				<code>}</code>
+			</pre>
+			<p>
+				La valeur est renvoyée par la fonction grâce à l'instruction <span class="code">return expr</span>
+				où <span class="code">expr</span> est une expression qu'il est préférable de placer entre <span class="hl">(</span> et <span class="hl">)</span>. 
+				Par exemple,
+			</p>
+			<pre>
+				<code><span class="btyp">double</span> <span class="fct">sum</span> (<span class="btyp">double</span> <span class="var">a</span>, <span class="btyp">double</span> <span class="var">b</span>) {</code>
+			    <code>    <span class="kwd">return</span> (<span class="var">a</span>+<span class="var">b</span>);</code>
+				<code>}</code>
+			</pre>
+			<p>
+				Si nécessaire, une conversion d'affectation sera effectuée pour adapter le type de l'expression au type de la fonction.
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="fct">cube</span> (<span class="btyp">int</span> <span class="var">a</span>) {</code>
+			    <code>    <span class="btyp">double</span> <span class="var">res</span> = <span class="fct">pow</span>(<span class="var">a</span>,<span class="nbr">3</span>);</code>
+			    <code>    <span class="kwd">return</span> <span class="var">res</span>;</code>
+				<code>}</code>
+			</pre>
+			<p>
+				Dans cet exemple, la fonction <span class="code">cube</span> convertit le résultat de type <span class="code">double</span> en une valeur de type <span class="code">int</span>.
+			</p>
+			<p>
+				De même une conversion d'affectation peut être réalisée lors de la récupération du résultat de la fonction. 
+			</p>
+			<pre>
+				<code><span class="btyp">double</span> <span class="fct">racine3</span> (<span class="btyp">int</span> <span class="var">a</span>) {</code>
+			    <code>    <span class="btyp">double</span> <span class="var">res</span> = <span class="fct">pow</span>(<span class="var">a</span>, <span class="nbr">1.0</span>/<span class="nbr">3</span>);</code>
+			    <code>    <span class="kwd">return</span> <span class="var">res</span>;</code>
+				<code>}</code>
+				<code>...</code>
+				<code><span class="btyp">int</span> <span class="var">i</span> = <span class="nbr">27</span>, <span class="var">j</span>;</code>
+				<code><span class="fct">printf</span>(<span class="stn">"la racine cubique de %d est %d\n"</span>, <span class="var">i</span>, <span class="var">j</span>=<span class="fct">racine3</span>(<span class="var">i</span>));</code>
+			</pre>
+
+			<p>
+				Attention, C n'exige pas d'intruction <span class="code">return</span> mais le résultat peut être indéterminé si elle est omise, comme dans l'exemple suivant :
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="fct">divint</span> (<span class="btyp">int</span> <span class="var">a</span>, <span class="btyp">int</span> <span class="var">b</span>) {</code>
+			    <code>    <span class="kwd">if</span> (<span class="var">b</span> != <span class="nbr">0</span>) {</code>
+			    <code>        <span class="kwd">return</span> (<span class="var">a</span>/<span class="var">b</span>);</code>
+			    <code>    }</code>
+				<code>}</code>
+			</pre>
+			<p>
+				Ni à la compilation, ni lors de l'exécution, n'apparaîtra un message indiquant un problème lorsque le paramètre b est nul.
+			</p>
+
+
+			<h3>Les variables des fonctions</h3>
+			<p>
+				Les fonctions utilisent différentes sortes de variables pour conserver des données durant la vie de la fonction : les <a href="#id_loc-var">variables locales</a>, <a href="#id_sta-var">les variables statiques</a>, <a href="#id_par">les paramètres</a>. Elles peuvent, si nécessaire, accéder aux <a href="#id_ext-var">variables externes</a>.
+			</p>
+
+			<h4 id="id_loc-var">Les variables locales</h4>
+			<p>
+				Une variable locale automatique (classification par défaut des variables locales) est une variable dont le rayon d'action (i.e. sa durée de vie) est limité à la fonction où elle est déclarée.
+				Elle est créée sur la pile du processeur à chaque appel de la fonction et détruite lorsque la fonction se termine.
+				Elle permet de stocker des données qui ne doivent vivre que durant l'exécution de la fonction.
+			</p>
+
+			<h4 id="id_sta-var">Les variables statiques</h4>
+			<p>
+				Par contre, une variable locale statique est une variable locale à la fonction (elle ne peut pas être utilisée en dehors de la fonction)
+				mais sa <span class="hl">durée de vie est liée à la durée de vie de l'application</span>. 
+				Elle n'est pas stockée sur la pile du processeur mais dans un segment de mémoire spécifique :
+				elle ne disparaît que lorsque l'application se termine. 
+				Elle permet donc de garder l'information qu'elle mémorise d'un appel de fonction à l'autre.
+				Un exemple de ce genre de variable est le pointeur utilisé dans la fonction <a href="./chaines.html#id_strtok">strtok</a>:
+				à chaque appel de la fonction, il continue le traitement de la chaîne initiale à partir de l'endroit mémorisé lors de l'appel précédent.
+			</p>
+			<p>
+				Voici un autre exemple dans lequel on accumule, dans une variable statique, les valeurs reçues en argument:
+			</p>
+			<pre>
+				<code><span class="ppd">#include</span> <span class="hdf">&lsaquo;stdio.h&rsaquo;</span></code>
+				<code><span class="ppd">#include</span> <span class="hdf">&lsaquo;stdlib.h&rsaquo;</span></code>
+				<code></code>
+				<code><span class="ppd">#define</span> <span class="mac">MAX</span> <span class="nbr">5</span></code>
+				<code></code>
+				<code><span class="btyp">int</span> <span class="fct">ajouter</span>(<span class="btyp">int</span> <span class="var">i</span>);</code>
+				<code></code>
+				<code><span class="btyp">int</span> <span class="fct">main</span>() {</code>
+				<code>    <span class="btyp">char</span> <span class="var">ligne</span>[<span class="mac">MAX</span>+<span class="nbr">2</span>];</code>
+				<code></code>
+				<code>    <span class="kwd">while</span> (<span class="fct">fgets</span>(<span class="var">ligne</span>, <span class="mac">MAX</span>+<span class="nbr">2</span>, <span class="sds">stdin</span>)) {</code>
+				<code>        <span class="btyp">int</span> <span class="var">n</span> = <span class="fct">atoi</span>(<span class="var">ligne</span>);</code>
+				<code>        <span class="fct">printf</span>(<span class="stn">"%d\n"</span>, <span class="fct">ajouter</span>(<span class="var">n</span>));</code>
+				<code>    }</code>
+				<code>}</code>
+				<code></code>
+				<code><span class="btyp">int</span> <span class="fct">ajouter</span>(<span class="btyp">int</span> <span class="var">i</span>) {</code>
+				<code>    <span class="kwd">static</span> <span class="btyp">int</span> <span class="var static">somme</span> = <span class="nbr">0</span>;</code>
+				<code></code>
+				<code>    <span class="kwd">return</span> (<span class="var static">somme</span>+=<span class="var">i</span>);</code>
+				<code>}</code>
+			</pre>
+
+			<h4 id="id_glo-var">Les variables globales</h4>
+			<p>
+				Les variables déclarées au début du fichier, à l'extérieur de toutes les fonctions (y compris la fonction principale <span class="code">main</span>), sont disponibles à toutes les fonctions du programme. Ce sont alors des <span class="bo">variables globales</span>. En général, les variables globales sont déclarées immédiatement derrière les directives <span class="code">#include</span> au début du programme.
+			</p>
+			<p>
+				Notez que les variables déclarées au début de la fonction principale <span class="code">main</span> ne sont pas des variables globales: elles sont locales à <span class="code">main</span>!
+			</p>
+			<p>
+				Attention! Les variables globales sont à éviter autant que possible, car elles créent des liens invisibles entre les fonctions. La modularité d'un programme peut en souffrir. De plus, des variables globales peuvent être involontairement masquées par des variables locales du même nom. Le codex de la programmation défensive nous conseille par conséquent d'écrire nos programmes aussi 'localement' que possible.
+			</p>
+
+			<h4 id="id_ext-var">Les variables externes</h4>
+			<p>
+				La déclaration externe d'un identificateur (p.e. une variable ou une fonction) s'obtient en faisant précéder une déclaration ordinaire du mot-clé <span class="hl">extern</span>. Celui-ci indique au compilateur qu'il s'agit d'un identificateur référencé dans un fichier alors qu'il est défini dans un autre fichier.
+			</p> 
+			<p>
+				S'agissant d'une variable externe, une telle déclaration ne crée pas de nouvelle variable et n'alloue pas de mémoire puisque celle-ci est définie en tant que variable globale dans autre fichier. Elle sera exportée à l'édition de liens.
+			</p>
+
+			<h3>Fonctions et tableaux</h3>
+			<p>
+				Le compilateur C convertit systématiquement les tableaux passés en paramètres à une fonction en pointeurs. Par conséquent, le contenu des tableaux utilisés en argument peut être modifié par la fonction! Par exemple, la fonction suivante initialise correctement un tableau passé en paramètre:
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="fct">initialiserTable</span> (<span class="btyp">int</span> *<span class="var">tab</span>, <span class="btyp">int</span> <span class="var">taille</span>) {</code>
+				<code>    <span class="kwd">for</span> (<span class="btyp">int</span> <span class="var">i</span>=<span class="nbr">0</span>; <span class="var">i</span>&lsaquo;<span class="var">taille</span>; <span class="var">i</span>++)</code>
+				<code>        <span class="var">t</span>[<span class="var">i</span>]=<span class="var">i</span>;</code>
+				<code>    <span class="kwd">return</span> <span class="var">taille</span>;</code>
+				<code>}</code>
+			</pre>	
+			<p>
+				Toutefois, il est possible d'empêcher une fonction de modifier un tableau passé en paramètre en le qualifiant de <span class="hl">const</span>:
+			</p>
+			<pre>
+				<code><span class="kwd">void</span> <span class="fct">afficher</span> (<span class="kwd">const</span> <span class="btyp">int</span>* <span class="var">tab</span>) { ... }</code>
+			</pre>
+			<p>
+				Dans cet exemple, tab est un pointeur vers un tableau constant. Le code se trouvant à l'intérieur de la fonction ne peut donc pas modifier les éléments de tab. Le qualificateur <span class="code">const</span> permet ainsi de protéger les paramètres effectifs d'une fonction en les mettant en "lecture seulement" pour la fonction.
+			</p>
+
+			<p>
+				Étant donné qu'un tableau est toujours converti en un pointeur vers son premier élément, les prototypes suivants sont strictement les mêmes:
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="fct">initialiserTable</span> (<span class="btyp">int</span> *<span class="var">tab</span>, <span class="btyp">int</span> <span class="var">taille</span>);</code>
+				<code><span class="btyp">int</span> <span class="fct">initialiserTable</span> (<span class="btyp">int</span> <span class="var">tab</span>[], <span class="btyp">int</span> <span class="var">taille</span>);</code>
+				<code><span class="btyp">int</span> <span class="fct">initialiserTable</span> (<span class="btyp">int</span> <span class="var">tab</span>[<span class="nbr">10</span>], <span class="btyp">int</span> <span class="var">taille</span>);    <span class="com">// le 10 ne sert absolument à rien</span></code>
+			</pre>	
+			<p>
+				Un tableau peut également être renvoyé comme résultat d'une fonction mais uniquement via un pointeur. Analysons le code suivant:
+			</p>
+			<pre>
+				<code><span class="btyp">int</span>[] <span class="fct">creerTable</span> (<span class="btyp">int</span> <span class="var">taille</span>) {    <span class="com">// erreur: une fonction ne peut pas être de type tableau</span></code>
+				<code>    <span class="btyp">int</span> <span class="var">tab</span>[<span class="var">taille</span>];    <span class="com">// erreur: tableau de taille variable (VLA) interdit</span></code>
+				<code>    <span class="kwd">for</span> (<span class="btyp">int</span> <span class="var">i</span>=<span class="nbr">0</span>; <span class="var">i</span>&lsaquo;<span class="var">taille</span>; <span class="var">i</span>++)</code>
+				<code>        <span class="var">tab</span>[<span class="var">i</span>]=<span class="var">i</span>;</code>
+				<code>    <span class="kwd">return</span> <span class="var">tab</span>;    <span class="com">// erreur: renvoi au programme appelant d'une <a href="#id_loc-var">variable locale</a> qui sera détruite au retour de la fonction</span></code>
+				<code>}</code>
+			</pre>	
+			<p>
+				Voici une manière correcte d'implémenter une fonction qui renvoie un tableau:
+			</p>
+			<pre>
+				<code><span class="btyp">int</span>* <span class="fct">creerTable</span> (<span class="btyp">int</span> <span class="var">taille</span>) {    <span class="com">// fonction de type pointeur</span></code>
+				<code>    <span class="btyp">int</span>* <span class="var">tab</span> = <span class="mac">NULL</span>;</code>
+				<code>    <span class="kwd">if</span> ((<span class="var">tab</span> = <span class="fct">malloc</span>(<span class="var">taille</span>*<span class="kwd">sizeof</span>(<span class="btyp">int</span>))) == <span class="mac">NULL</span>) {    <span class="com">// allocation dynamique du tableau</span></code>
+				<code>        <span class="fct">perror</span>(<span class="stn">"malloc error"</span>);</code>
+				<code>        <span class="kwd">return</span> <span class="mac">NULL</span>;</code>
+				<code>    }</code>
+				<code>    <span class="kwd">for</span> (<span class="btyp">int</span> <span class="var">i</span>=<span class="nbr">0</span>; <span class="var">i</span>&lsaquo;<span class="var">taille</span>; <span class="var">i</span>++)</code>
+				<code>        <span class="var">tab</span>[<span class="var">i</span>]=<span class="var">i</span>;</code>
+				<code>    <span class="kwd">return</span> <span class="var">tab</span>;    <span class="com">// renvoi de l'adresse du tableau dynamique</span></code>
+				<code>}</code>
+			</pre>
+
+			<p>
+				Le programme appelant doit récupérer le tableau renvoyé par la fonction.
+			</p>
+			<pre>
+				<code><span class="btyp">int</span>* <span class="var">t</span> = <span class="fct">creerTable</span>(<span class="nbr">10</span>);</code>
+			</pre>
+			<p>
+				Notez que les instructions suivantes provoqueront une erreur:
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">t</span>[<span class="nbr">6</span>];</code>
+				<code><span class="var">t</span> = <span class="fct">creerTable</span>(<span class="nbr">6</span>);    <span class="com">// erreur de compilation</span></code>
+			</pre>
+			<p>
+				En effet, le pointeur t ne peut recevoir une nouvelle adresse car il est constant: le tableau étant défini de manière statique, sa zone mémoire est allouée dès la compilation dans le <span class="it">data segment</span>.
+			</p>
+		</section>
+
+	</section>
+
+	<footer>
+		<p id="copyright"> <a href="mailto:anthony.legrand@vinci.be">Anthony Legrand</a> &copy; 2018 <a href="http://www.ipl.be"><img src="../images/ipl_bleu.png" alt="logo ipl" /></a></p>
+	</footer>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

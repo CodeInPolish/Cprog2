@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Legrand Anthony, Verriest Anthony">
+    <meta name="description" content="Syllabus langage C">
+    <meta name="keywords" content="Programmation, Langage C">
+	<title>Cours de Langage C</title>
+	<link rel="stylesheet" type="text/css" href="../css/base.css">
+	<link rel="stylesheet" type="text/css" href="../css/layout.css">
+	<link rel="stylesheet" type="text/css" href="../css/modules.css">
+</head>
+<body>
+	<header id="header">
+		<h1>Le langage C</h1>
+	</header>
+
+	<!--Navigation bar-->
+	<nav class="sticky-nav">
+		<nav class="nav">
+			<a href="../index.html">Introduction</a>
+	  		<div class="dropdown">
+	    		<button class="dropdownbtn">Cours &#x25BC;</button>
+	    		<div class="dropdown-content">
+	    			<div class="dropdown-content-in">
+						<a href="./langage.html">1. Éléments du langage</a>
+						<a href="./instructions.html">2. Instructions</a>
+						<a href="./tableaux.html">3. Tableaux</a>
+						<a href="./pointeurs.html">4. Pointeurs</a>
+						<a href="./chaines.html">5. Chaînes de caractères</a>
+						<a href="./entrees-sorties.html">6. Entrées-sorties</a>
+						<a href="./fonctions.html">7. Fonctions</a>
+					</div>
+					<div class="dropdown-content-in">
+						<a href="./modularisation.html">8. Modularisation</a>
+						<a href="./structures.html">9. Structures et autres types utilisateurs</a>
+						<a href="./fichier.html">10. Fichiers</a>
+						<a href="./classes.html">11. Classes d'allocation</a>
+						<a href="./preprocesseur.html">12. Préprocesseur [TODO]</a>
+						<a href="./librairies.html">13. Librairies [TODO]</a>
+					</div>
+	    		</div>
+	  		</div> 
+	  		<a href="./lexique.html">Index [TODO]</a>
+		</nav>
+	</nav>
+
+	<!--Main Content-->
+	<section id="main">
+		<!-- <h2 class="title"><center>10. Fichiers</center></h2> -->
+
+		<section id="content">
+			<button onclick="topFunction()" id="top" title="Remonter">&#x21ea;</button>
+
+			<h2 class="title"><center>10. Fichiers</center></h2>
+
+			<p>
+				Pour les systèmes d'exploitation des familles Unix-Linux,
+				un fichier est généralement considéré comme un ensemble de bytes accédés séquentiellement.
+				Dans la documentation, il est fréquemment question de <span class="hl">stream</span> (<span class="it">flot</span> ou <span class="it">flux</span> en français) lorsque l'on parle de ces fichiers.
+			</p>
+			<p>
+				Le présent chapitre traite de la manipulation des fichiers par des pointeurs sur les structures <span class="code">FILE</span> et des fonctions standards qui y sont associées.
+				L'utilisation des appels systèmes et des <span class="it">file descriptors</span> sera abordée dans le cours de Unix.
+			</p>
+			<p>
+				Nous verrons que le monde Unix-Linux reconnaît 2 types de fichiers :
+				les fichiers constitués uniquement de caractères imprimables (fichiers <a href="#id_txt-f">text</a>)
+				et les autres fichiers (fichiers <a href="#id_bin-f">binaires</a>).
+			</p>
+
+			<h3>Descripteur de fichier</h3>
+			<p>
+				Les applications C  gèrent les fichiers en stockant les informations utiles (nom, count pointer, attributs, etc) dans une <span class="bo">structure FILE</span>.
+				Pour chaque application, ces structures sont stockées dans une table,  
+				où une structure peut être accédée soit par son indice, appelé <span class="hl">file descriptor</span>, soit par un pointeur.
+				Les 3 premiers éléments de la table sont réservés aux flots de données standard (cf. point suivant).
+			</p>
+			<p>
+				Lorsqu'il est nécessaire d'utiliser un fichier particulier, la première étape est d'<a href="#id_open">ouvrir le fichier</a>
+				pour créer et remplir une structure <span class="code">FILE</span> et pour stocker celle-ci dans la table des descripteurs de fichiers.
+				Lorsqu'on accède à la structure au moyen de son <span class="it">file descriptor</span>, les opérations de lecture, écriture, etc. sont réalisées au travers 
+				des <span class="hl"> appels système</span>, propres à l'OS. Mais il est également possible de manipuler les fichiers grâce aux fonctions 
+				standards, dont les prototypes se trouvent dans le fichier <span class="code">stdio.h</span>.
+				Ces fonctions référencent un fichier grâce à un pointeur sur la structure <span class="code">FILE</span>.
+			</p>
+
+			<h3>Les flots standard</h3>
+			<p>
+				Trois flots standard peuvent être utilisés en C sans qu'il soit nécessaire de les ouvrir ou de les fermer:
+			</p>
+			<ul>
+				<li>
+					<p>
+						<span class="bo">stdin</span> (<span class="it">standard input</span>): unité d'entrée standard (par défaut, le clavier) ;
+					</p>
+				</li>
+				<li>
+					<p>
+						<span class="bo">stdout</span> (<span class="it">standard output</span>): unité de sortie standard (par défaut, l'écran) ;
+					</p>
+				</li>
+				<li>
+					<p>
+						<span class="bo">stderr</span> (<span class="it">standard error</span>): unité d'affichage des messages d'erreur (par défaut, l'écran).
+					</p>
+				</li>
+			</ul>
+			<p>
+				Notez qu'il est fortement conseillé d'afficher systématiquement les messages d'erreur sur <span class="code">stderr</span> afin que ces messages apparaissent à l'écran 
+				même lorsque la sortie standard est redirigée.
+			</p>
+			<p>
+				Les flots de données standard occupent les trois premières places de la table des <span class="it">file descriptors</span>: à l'indice 0 se trouve la structure reprenant les 
+				informations du fichier <span class="bo code">stdin</span> (entrée standard - clavier), à l'indice 1 du fichier <span class="bo code">stdout</span> (sortie standard - écran) 
+				et à l'indice 2 <span class="bo code">stderr</span> (sortie des messages d'erreur - écran).
+			</p>
+
+			<h3 id="id_open">Ouverture - Fermeture</h3>
+			<p>
+				La première étape lorsqu'on désire utiliser des fichiers dans une application est l'<span class="bo">ouverture du fichier</span>.
+				En C, la fonction qui réalise cette action est la fonction <a href="http://man7.org/linux/man-pages/man3/fopen.3.html" target="_blank">fopen()</a>.
+			</p>
+			<p>
+				Cette fonction nécessite deux paramètres: le premier, de type <span class="code">char*</span>, est le nom du fichier dans le "file system" et 
+				le second, également un <span class="code">char*</span>, permet de spécifier le <span class="bo">mode d'ouverture</span>, i.e. la façon d'exploiter le fichier. Les principaux modes sont :
+			</p>
+			<dl>
+				<dt><span class="hl">"r"  </span></dt> 
+				<dd>Ouverture en lecture (<span class="it">read</span>) ; si le fichier n'existe pas, il y a erreur</dd>
+				<dt><span class="hl">"w"  </span></dt>
+				<dd>Ouverture en écriture (<span class="it">write</span>) ; si le fichier existe, il est écrasé</dd>
+				<dt><span class="hl">"a"  </span></dt>
+				<dd>Ouverture en ajout (<span class="it">append</span>) ; si le fichier n'existe pas, il est créé, si le fichier existe, il est continué</dd>
+			</dl>
+			<p>
+				S'agissant des <span class="bo">fichiers binaires</span>, les principaux modes d'ouverture sont :
+			</p>
+			<dl>
+				<dt><span class="hl">"rb"  </span></dt>
+				<dd>Ouverture en lecture binaire (<span class="it">read binary</span>) ; si le fichier n'existe pas, il y a erreur</dd>
+				<dt><span class="hl">"wb"  </span></dt>
+				<dd>Ouverture en écriture binaire (<span class="it">write binary</span>) ; si le fichier existe, il est écrasé</dd>
+				<dt><span class="hl">"ab"  </span></dt>
+				<dd>Ouverture en ajout binaire (<span class="it">append binary</span>) ; si le fichier n'existe pas, il est créé, si le fichier existe, il est continué</dd>
+			</dl>
+			<br>
+			<p>
+				En cas de réussite, la fonction retourne un pointeur sur une structure <span class="code">FILE</span>. C'est ce pointeur qu'il faut utiliser dans les fonctions de traitements du fichier.
+				Si un problème empêche l'ouverture du fichier, la fonction renverra un pointeur <span class="code">NULL</span> et positionnera <span class="code">errno</span> à une valeur non nulle, dépendant du type d'erreur détectée.
+				La consultation de la page du manuel permet de déterminer le type d'erreur.
+			</p>
+			<pre>
+				<code><span class="tde">FILE</span> *<span class="var">fin</span> = <span class="mac">NULL</span>;</code>
+				<code><span class="kwd">if</span> ((<span class="var">fin</span> = <span class="fct">fopen</span>(<span class="var">nom</span>, <span class="stn">"r"</span>)) == <span class="mac">NULL</span>) {</code>
+			   	<code>    <span class="fct">perror</span>(<span class="stn">"Problème lors de l'ouverture du fichier fin"</span>);</code>
+			   	<code>    <span class="kwd">return</span> <span class="nbr">1</span>;</code>
+				<code>}</code>
+			</pre>
+			<p>
+				Lorsque le fichier n'est plus utilisé dans l'application, il est préférable de le fermer pour libérer les ressources. La <span class="bo">fermeture d'un fichier</span>
+				se fait à l'aide de la fonction <a href="http://man7.org/linux/man-pages/man3/fclose.3.html" target="_blank">fclose()</a>:
+			</p>
+			<pre>
+				<code><span class="fct">fclose</span>(<span class="var">fin</span>); </code>
+			</pre>
+
+			<h3 id="id_txt-f">Les fichiers text</h3>
+			<p>
+				Un fichier <span class="hl">text</span> est un fichier constitué uniquement de caractères imprimables, où chaque ligne est terminée par le caractère '<span class="code">\n</span>'.
+				Il est possible de le traiter caractère par caractère grâce aux macros ou fonctions 
+				<a href="#id_getchar">getchar()</a>, <a href="#id_fgetc">fgetc()</a> ou <a href="#id_getc">getc()</a>, 
+				<a href="#id_putchar">putchar()</a>, <a href="#id_fputc">fputc()</a> ou <a href="#id_putc">putc()</a>, 
+				ou ligne par ligne grâce à la fonction de lecture <a href="#id_fgets">fgets()</a> et la fonction d'écriture <a href="#id_fputs">fputs()</a>,
+			</p>
+
+			<h4 id="id_txt-f-r">Lecture</h4>
+			<p>
+				La lecture est bufferisée par le système, càd. que le système lit un bloc de bytes en une seule opération et fournit les bytes 
+				demandés par la fonction de lecture en les extrayant du buffer. Il peut soit fournir un caractère soit une ligne (ou une partie de ligne). 
+			</p>
+			<dl>
+				<dt id="id_fgetc" class="code">
+					<a href="http://man7.org/linux/man-pages/man3/fgetc.3.html" target="_blank">int fgetc (FILE * stream)</a>
+				</dt>
+				<dd>
+					Fonction qui lit un caractère du fichier <span class="code">stream</span> et le retourne ; elle renvoie la valeur <span class="hl">EOF</span> (-1) si la fin de fichier est rencontrée 
+					(le type <span class="code">int</span> est nécessaire à cause de cette valeur négative).
+				</dd>
+				
+				<dt id="id_getc" class="code">
+					<a href="http://man7.org/linux/man-pages/man3/getc.3.html" target="_blank">int getc (FILE * stream)</a>
+				</dt>
+				<dd>
+					Macro (ou fonction) qui lit un caractère du fichier <span class="code">stream</span> et le retourne ; elle renvoie la valeur <span class="hl">EOF</span> (-1) si la fin de fichier est rencontrée 
+					(le type <span class="code">int</span> est nécessaire à cause de cette valeur négative).
+				</dd>
+				
+				<dt id="id_getchar" class="code">
+					<a href="http://man7.org/linux/man-pages/man3/getchar.3.html" target="_blank">int getchar ()</a>
+				</dt>
+				<dd>
+					Macro (ou fonction) qui lit un caractère du fichier <span class="code">sdtin</span> et le retourne ; elle renvoie la valeur <span class="hl">EOF</span> (-1) si la fin de fichier est rencontrée
+					(le type <span class="code">int</span> est nécessaire à cause de cette valeur négative).
+				</dd>
+				
+				<dt id="id_ungetc" class="code">
+					<a href="http://man7.org/linux/man-pages/man3/ungetc.3.html" target="_blank">int ungetc (int c, FILE * stream)</a>
+				</dt>
+				<dd>
+					Replace le caractère lu dans le buffer du fichier <span class="code">stream</span>.
+				</dd>
+				
+				<dt id="id_fgets" class="code">
+					<a href="http://man7.org/linux/man-pages/man3/fgets.3.html" target="_blank">int fgets (char *s, int n, FILE * stream)</a>
+				</dt>
+				<dd>
+					Lit une (partie de) ligne du fichier <span class="code">stream</span> et renvoie le pointeur <span class="hl">NULL</span> si la fin de fichier est rencontrée. Le 1er paramètre est l'adresse 
+					d'une zone mémoire (par exemple un tableau de caractères) dont la longueur est suffisante pour stocker <span class="code">n</span> caractères lus sur <span class="code">stream</span>
+					(en ce compris le caractère '<span class="code">\0</span>' marquant la fin de la chaîne). Par exemple,
+					<pre>
+						<code><span class="btyp">char</span> <span class="var">ligne</span>[<span class="nbr">256</span>];</code>
+						<code><span class="kwd">while</span> (<span class="fct">fgets</span>(<span class="var">ligne</span>, <span class="nbr">256</span>, <span class="var">fin</span>)) {</code>
+					  	<code>    ...</code>
+						<code>}</code>
+					</pre>
+					lit une ligne du fichier <span class="code">fin</span>. Si la taille de la ligne en cours de lecture est supérieure à <span class="code">n</span>, la fonction ne lira pas l'entièreté 
+					de la ligne mais se limitera à <span class="code">n-1</span> caractères. 
+				</dd>
+			</dl>
+
+			<h4 id="id_txt-f-w">Ecriture</h4>
+			<p>
+				En général, les écritures sont bufferisées pour réduire le nombre d'accès disques et donc augmenter les performances du système.
+				Il est possible de forcer la vidange du buffer grâce à la fonction <a href="#id_f_fflush">fflush()</a>.
+			 </p>
+			<dl>
+				<dt id="id_fputc" class="code">
+					<a href="http://man7.org/linux/man-pages/man3/fputc.3.html" target="_blank">int fputc (int c, FILE * stream)</a>
+				</dt>
+				<dd>
+					Fonction qui écrit un caractère dans le fichier <span class="code">stream</span>.
+				</dd>
+				
+				<dt id="id_putc" class="code">
+					<a href="http://man7.org/linux/man-pages/man3/putc.3.html" target="_blank">int putc (int c, FILE * stream)</a>
+				</dt>
+				<dd>
+					Macro (ou fonction) qui écrit un caractère dans le fichier <span class="code">stream</span>.
+				</dd>
+				
+				<dt id="id_putchar" class="code">
+					<a href="http://man7.org/linux/man-pages/man3/putchar.3.html" target="_blank">int putchar (int c)</a>
+				</dt>
+				<dd>
+					Macro (ou fonction) qui écrit un caractère dans le fichier <span class="code">sdtout</span>.
+				</dd>
+					
+
+					<dt id="id_fputs" class="code inline">
+						<a href="http://man7.org/linux/man-pages/man3/fputs.3.html" target="_blank">int fputs (char *s, FILE * stream)</a>
+					</dt>
+					<dt id="id_puts" class="code inline">
+						<a href="http://man7.org/linux/man-pages/man3/puts.3.html" target="_blank">int puts (char *s)</a>
+					</dt>
+				<dd>
+					Fonctions qui écrivent la chaîne de caractères <span class="code">s</span> dans le fichier <span class="code">stream</span> (<span class="code">fputs()</span>) ou <span class="code">stdout</span> (<span class="code">puts()</span>).
+				</dd>
+				
+				<dt id="id_fprintf" class="code"><a href="#id_f_fprintf">
+					int fprintf (FILE * stream, const char * format, ...)</a>
+				</dt>
+				<dd>
+					Ecriture formatée
+				</dd>
+			</dl>
+
+			<h4 id="id_f_fprintf">printf</h4>
+			<p>
+				L'écriture formatée permet de convertir des valeurs en une chaîne de caractères avec beaucoup de souplesse. 
+				Trois fonctions utilisent l'écriture formatée :
+			</p>
+			<dl>
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/fprintf.3.html" target="_blank">int fprintf (FILE *stream, const char * format, ...)</a>
+				</dt>
+				<dd>
+					L'output de la fonction est écrit sur le fichier <span class="code">stream</span>
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/printf.3.html" target="_blank">int printf (const char * format, ...)</a>
+				</dt>
+				<dd>
+					L'output de la fonction est écrit sur le fichier <span class="code">stdout</span>
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/sprintf.3.html" target="_blank">int sprintf (char *str, const char * format, ...)</a>
+				</dt>
+				<dd>
+					l'output de la fonction est écrit dans le buffer de caractères pointé par <span class="code">str</span>
+				</dd>
+			</dl>
+			<br>
+			<p>
+				Le <span class="code">format</span> permet de préciser comment l'output doit être formaté. Tout caractère est repris tel quel dans l'output sauf en 
+				présence du caractère '<span class="code">%</span>' qui précise comment doit être interprété le contenu du paramètre correspondant dans la liste spécifiée après le format. 
+				Le format général d'un parmètre est de la forme <span class="hl">%cn.ptl</span> où
+			</p>
+			<dl>
+				<dt>c</dt>
+				<dd>
+					Le flag est un des caractères: <span class="hl">0</span> (padding à gauche par des zéros '0'), <span class="hl">-</span> (justification à gauche),
+					<span class="hl">+</span> (toujours afficher le signe), <span class="hl">' '</span> (mettre un espace ' ' avant un nombre positif),
+					<span class="hl">#</span> (employer une variable de formatage).
+				</dd>
+				
+				<dt>n</dt>
+				<dd>
+					Taille minimale de la zone écrite ('*' si la taille est spécifiée dans un paramètre).
+				</dd>
+				
+				<dt>p</dt>
+				<dd>
+					Indique la <a href="#id_prec">précision</a> qui est fonction du type de conversion
+					('*' si la taille est spécifiée dans un paramètre).</dd>
+				
+				<dt>t</dt>
+				<dd>
+					Modificateur de taille ('h' <span class="code">short</span>, 'l' <span class="code">long</span> ou 'L' <span class="code">long double</span>).
+				</dd>
+				
+				<dt>l</dt>
+				<dd>
+					Indique la conversion ('c', 'd', 'e', 'f', 'g', 'G', 'i', 'n', 'o', 'p','s', 'u', 's', 'x' ou 'X').
+				</dd>
+			</dl>
+			<br>
+			<p>
+				Voici les interprétations des conversions :
+			</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Type de conversion</th>
+						<th>Signification</th>
+						<th>Flags permis</th>
+						<th>Modificateurs de tailles possibles</th>
+						<th>Type des arguments</th>
+						<th>Précision par défaut</th>
+					</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<th rowspan="3">d  i</th>
+					<td rowspan="3">décimal</td>
+					<td rowspan="3">'0' '-' '+' ' '</td>
+					<td>[rien]</td>
+					<td>int </td>
+					<td rowspan="3">1</td>
+				</tr>
+				<tr>
+					<td>h</td>
+					<td>short</td>
+				</tr>
+				<tr>
+					<td>l</td>
+					<td>long</td>
+				</tr>
+				<tr>
+					<th rowspan="3">u</th>
+					<td rowspan="3">non signé</td>
+					<td rowspan="3">'0' '-' '+' ' '</td>
+					<td>[rien]</td>
+					<td>unsigned </td>
+					<td rowspan="3">1</td>
+				</tr>
+				<tr>
+					<td>h</td>
+					<td>unsigned short</td>
+				</tr>
+				<tr>
+					<td>l</td>
+					<td>unsigned long</td>
+				</tr>
+				<tr>
+					<th rowspan="3">o</th>
+					<td rowspan="3">octal</td>
+					<td rowspan="3">'0' '-' '+' ' '</td>
+					<td>[rien]</td>
+					<td>unsigned </td>
+					<td rowspan="3">1</td>
+				</tr>
+				<tr>
+					<td>h</td>
+					<td>unsigned short</td>
+				</tr>
+				<tr>
+					<td>l</td>
+					<td>unsigned long</td>
+				</tr>
+				<tr>
+					<th rowspan="3">x  X</th>
+					<td rowspan="3">hexa</td>
+					<td rowspan="3">'0' '-' '+' ' '</td>
+					<td>[rien]</td>
+					<td>unsigned </td>
+					<td rowspan="3">1</td>
+				</tr>
+				<tr>
+					<td>h</td>
+					<td>unsigned short</td>
+				</tr>
+				<tr>
+					<td>l</td>
+					<td>unsigned long</td>
+				</tr>
+				<tr>
+					<th rowspan="2">f</th>
+					<td rowspan="2">réel normal</td>
+					<td rowspan="2">'0' '-' '+' ' '</td>
+					<td>[rien] 'l'</td>
+					<td>double </td>
+					<td rowspan="2">6</td>
+				</tr>
+				<tr>
+					<td>h</td>
+					<td>unsigned short</td>
+				</tr>
+				<tr>
+					<th rowspan="2">e E</th>
+					<td rowspan="2">scientifique</td>
+					<td rowspan="2">'0' '-' '+' ' '</td>
+					<td>[rien] 'l'</td>
+					<td>double </td>
+					<td rowspan="2">6</td>
+				</tr>
+				<tr>
+					<td>h</td>
+					<td>unsigned short</td>
+				</tr>
+				<tr>
+					<th rowspan="2">g G</th>
+					<td rowspan="2">le plus court</td>
+					<td rowspan="2">'0' '-' '+' ' '</td>
+					<td>[rien] 'l'</td>
+					<td>double </td>
+					<td rowspan="2">6</td>
+				</tr>
+				<tr>
+					<td>h</td>
+					<td>unsigned short</td>
+				</tr>
+				<tr>
+					<th>c</th>
+					<td>caractère</td>
+					<td>'-'</td>
+					<td>[rien]</td>
+					<td>int</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<th>s</th>
+					<td>chaîne</td>
+					<td>'-'</td>
+					<td>[rien]</td>
+					<td>char *</td>
+					<td>?</td>
+				</tr>
+				<tr>
+					<th>p</th>
+					<td>pointeur</td>
+					<td></td>
+					<td>[rien]</td>
+					<td>void *</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<th rowspan="3">n</th>
+					<td rowspan="3">pointeur</td>
+					<td rowspan="3"></td>
+					<td>[rien]</td>
+					<td>int *</td>
+					<td rowspan="3">n/a</td>
+				</tr>
+				<tr>
+					<td>h</td>
+					<td>short *</td>
+				</tr>
+				<tr>
+					<td>l</td>
+					<td>long *</td>
+				</tr>
+				<tr>
+					<th>%</th>
+					<td>%</td>
+					<td></td>
+					<td>[rien]</td>
+					<td>[rien]</td>
+					<td>%</td>
+				</tr>
+				</tbody>
+			</table>
+			<p>
+				Quelques remarques concernant ce tableau :
+			</p>
+			<ul>
+				<li>
+					<p>
+						La taille minimale ne peut pas commencer par '0' pour ne pas confondre avec le flag '0'
+					</p>
+				</li>
+				<li>
+					<p>
+						La taille minimale indique le nombre minimal de caractères écrits,
+					</p>
+					<p>
+						si la taille est trop grande par rapport à la valeur, il y a remplissage (padding) avec ' ' ou '0'
+					</p>
+					<p>
+						si la taille est trop petite, la zone est étendue
+					</p>
+				</li>
+				<li id="id_prec">
+					<p>
+						La précision a une signification adaptée à la conversion :
+					</p>
+					<dl>
+						<dt>
+							Pour les conversions entières (d i o u x X)
+						</dt>
+						<dd>
+							= nombre minimum de chiffres
+						</dd>
+						
+						<dt>
+							Pour les conversions de nombres réels (e E f)
+						</dt>
+						<dd>
+							= nombre de chiffres décimaux (à droite du .)
+						</dd>
+						
+						<dt>
+							Pour les conversions de nombres réels (g G)
+						</dt>
+						<dd>
+							= nombre de chiffres significatifs
+						</dd>
+						
+						<dt>
+							Pour les conversions de chaînes
+						</dt>
+						<dd>
+							= nombre maximum de caractères à écrire (donc troncage éventuel)
+						</dd>
+					</dl>
+				 </li>
+				<li>
+					<p>
+						Si le '.' est indiqué sans précision, celle-ci est considérée comme 0
+					</p>
+				</li>
+			</ul>
+
+			<h3 id="id_bin-f">Les fichiers binaires</h3>
+			<p>
+				Outre les fichiers text, il existe un second type de fichiers: les fichiers <span class="hl">binaires</span>.
+				Ces fichiers sont très pratiques puisqu'ils permettent de charger ou de sauver différents types de données définis en C
+				(par exemple, une bibliothèque définie comme un tableau de <span class="code">struct Livre</span> 
+				peut être sauvée dans un fichier binaire pour être par la suite directement chargée depuis ce fichier).
+			</p>
+			<p>
+				Les fichiers binaires sont lus et écrits à l'aide de deux fonctions qui traitent un nombre précis de bytes:
+			</p>
+
+			<h4 id="id_bin-f-r">Lecture</h4>
+			<p>
+				La fonction de lecture: <a href="http://man7.org/linux/man-pages/man3/fread.3.html" target="_blank">  size_T fread (void *base, size_t size, size_t nmemb, FILE * stream)</a>
+			</p>
+			<p> (<span class="code">size</span> * <span class="code">nmemb</span>) bytes dans le fichier <span class="code">stream</span> et les place en 	
+				mémoire à l'adresse <span class="code">base</span>.
+				La zone pointée par <span class="code">base</span> doit être suffisamment grande.
+				Si <span class="code">nmemb</span> est différent de 1, <span class="code">base</span> sera l'adresse d'un tableau.
+			</p>
+			<p>
+				La fonction <span class="code">fread</span> renvoie le nombre d'enregistrements lus. Si ce nombre est inférieur à <span class="code">nmemb</span>, cela signifie que la fin du fichier est atteinte. 
+				Si la fonction renvoie la valeur 0, cela indique un problème de lecture (à tester grâce à la fonction <a href="#id_ferror">ferror</a>) 
+				ou la fin du fichier (à vérifier grâce à la fonction <a href="#id_feof">feof</a>).
+			</p>
+
+			<h4 id="id_bin-f-w">Ecriture</h4>
+			<p>
+				La fonction d'écriture: <a href="http://man7.org/linux/man-pages/man3/fwrite.3.html" target="_blank">  size_T fwrite (void *base, size_t size, size_t nmemb, FILE * stream)</a>
+			</p>
+			<p>
+				écrit (<span class="code">size</span> * <span class="code">nmemb</span>) bytes dans le fichier <span class="code">stream</span> à partir de la zone mémoire située à l'adresse <span class="code">base</span>.
+				Si <span class="code">nmemb</span> est différent de 1, <span class="code">base</span> sera l'adresse d'un tableau.
+			</p>
+			<p>
+				La fonction <span class="code">fwrite</span> renvoie le nombre d'enregistrements écrits. Si la fonction renvoie la valeur 0, cela indique un problème d'écriture 
+				(à tester grâce à la fonction <a href="#id_ferror">ferror</a>).
+			</p>
+
+			<h3>D'autres fonctions liées aux fichiers</h3>
+			<p>
+				La librairie standard (<span class="code">stdio.h</span>) comprend quelques autres fonctions utilisées dans
+				le <a href="#id_f_err">traitement des erreurs</a>, 
+				le <a href="#id_f-pos">positionnement dans le fichier</a>, 
+				certains <a href="#id_f-syst">traitements système</a>,
+				ainsi que la fonction <a href="#id_f_fflush">fflush()</a> pour vider le buffer d'écriture.
+			</p>
+
+			<h4 id="id_f_fflush">La fonction fflush</h4>
+			<p>
+				La fonction <a href="http://man7.org/linux/man-pages/man3/fflush.3.html" target="_blank">fflush (FILE * stream)</a>
+				permet de vider le buffer d'écriture, même si celui-ci n'est pas complètement rempli.
+				En effet, les écritures sont bufferisées par le système,
+				càd. que l'écriture physique sur le disque n'est réalisée que lorsque le buffer est plein
+				(ou que le caractère <span class="hl">'\n'</span> est rencontré, dans le cas des fonctions d'écriture
+				dans des fichiers de type <a href="#id_txt-f">text)</a>.
+				La fonction <span class="code">fflush</span> permet de forcer la vidange du buffer d'écriture
+				avant la réalisation d'une de ces conditions.
+			</p>
+
+			<h4 id="id_f_err">Traitement des erreurs</h4>
+			<p>
+				Les fonctions suivantes peuvent être utilisées pour vérifier le bon résultat des fonctions "système".
+				Rappelons qu'en cas d'erreur système, la variable système <span class="code">errno</span> est positionnée
+				(les codes d'erreurs sont expliqués dans les pages du <span class="bo">man</span>). Ne pas oublier d'inclure le fichier <span class="code">errno.h</span>.
+			</p>
+			<dl>
+				<dt id="id_feof" class="code">
+					<a href="http://man7.org/linux/man-pages/man3/feof.3.html" target="_blank">int feof (FILE * stream)</a>
+				</dt>
+				<dd>
+					Renvoie la valeur VRAI si la fin du fichier est atteinte (càd. si la dernière lecture effectuée a atteint la fin de fichier;
+					on a donc essayé de lire au-delà du dernier byte)
+				</dd>
+				
+				<dt id="id_ferror" class="code">
+					<a href="http://man7.org/linux/man-pages/man3/ferror.3.html" target="_blank">int ferror (FILE * stream)</a>
+				</dt>
+				<dd>
+					Renvoie la valeur VRAI si une erreur "système" s'est produite
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/clearerr.3.html" target="_blank">void clearerr (FILE * stream)</a>
+				</dt>
+				<dd>
+					Réinitialise la variable <span class="code">errno</span> (les fonctions qui se terminent normalement ne modifient pas <span class="code">errno</span>)
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/perror.3.html" target="_blank">void perror (const char * mess)</a>
+				</dt>
+				<dd>
+					Affiche sur <span class="code">sdterr</span> un message d'erreur système, en plus du message passé en paramètre
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strerror.3.html" target="_blank">char* strerror (int errnum)</a>
+				</dt>
+				<dd>
+					Convertit le code d'erreur de <span class="code">errno</span> en une chaîne de caractères.
+				</dd>
+			</dl>
+
+			<h4 id="id_f-pos">Positionnement dans le fichier</h4>
+			<p>
+				La lecture/écriture d'un fichier utilise un <span class="hl">pointeur de fichier</span> positionné à l'endroit où l'action (lecture/écriture) va s'effectuer.
+				Normalement, cette position est gérée par le traitement de lecture/écriture et ne doit pas être géré par l'application.
+				Cependant, si un traitement non séquentiel est requis sur le fichier, il est possible de modifier directement ce pointeur grâce aux fonctions suivantes:
+			</p>
+			<dl>
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/fseek.3.html" target="_blank">int fseek (FILE * stream, long deplacement, int origine)</a>
+				</dt>
+				<dd>
+					Fonction qui recalcule la valeur du pointeur de fichier, où <span class="code">origine</span> spécifie l'une des trois positions:
+					<dl>
+						<dt class="code">SEEK_SET</dt><dd>(0) depuis le début du fichier</dd>
+						<dt class="code">SEEK_CUR</dt><dd>(1) depuis la position courante du fichier</dd>
+						<dt class="code">SEEK_END</dt><dd>(2) depuis la fin du fichier</dd>
+					</dl>
+					<br>
+					position à partir de laquelle le <span class="code">deplacement</span> (<span class="it">offset</span> en anglais, exprimé en bytes) est effectué.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/ftell.3.html" target="_blank">long ftell (FILE * stream)</a>
+				</dt>
+				<dd>
+					Renvoie la position courante (exprimée en bytes) dans le fichier <span class="code">stream</span>.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/rewind.3.html" target="_blank">void rewind (FILE * stream)</a>
+				</dt>
+				<dd>
+					Replace le pointeur au début du fichier.
+				</dd>
+			</dl>
+
+			<h4 id="id_f-syst">Traitement "système"</h4>
+			<p>
+				C permet également de manipuler le nom des fichiers grâce aux fonctions suivantes:
+			</p>
+			<dl>
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man2/rename.2.html" target="_blank">int rename (const char* ancien, const char* nouveau)</a>
+				</dt>
+					<dd>
+						Change le nom d'un fichier et retourne 0 en cas de réussite
+					</dd>
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/remove.3.html" target="_blank">int remove (const char* nom)</a>
+				</dt>
+					<dd>
+					Supprime le fichier dont le nom est passé en paramètre.
+				</dd>
+			</dl>
+
+		</section>
+	</section>
+
+	<footer>
+		<p id="copyright"> <a href="mailto:anthony.legrand@vinci.be">Anthony Legrand</a> &copy; 2018 <a href="http://www.ipl.be"><img src="../images/ipl_bleu.png" alt="logo ipl" /></a></p>
+	</footer>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Legrand Anthony, Verriest Anthony">
+    <meta name="description" content="Syllabus langage C">
+    <meta name="keywords" content="Programmation, Langage C">
+	<title>Cours de Langage C</title>
+	<link rel="stylesheet" type="text/css" href="../css/base.css">
+	<link rel="stylesheet" type="text/css" href="../css/layout.css">
+	<link rel="stylesheet" type="text/css" href="../css/modules.css">
+</head>
+<body>
+	<header id="header">
+		<h1>Le langage C</h1>
+	</header>
+
+	<!--Navigation bar-->
+	<nav class="sticky-nav">
+		<nav class="nav">
+			<a href="../index.html">Introduction</a>
+	  		<div class="dropdown">
+	    		<button class="dropdownbtn">Cours &#x25BC;</button>
+	    		<div class="dropdown-content">
+	    			<div class="dropdown-content-in">
+						<a href="./langage.html">1. Éléments du langage</a>
+						<a href="./instructions.html">2. Instructions</a>
+						<a href="./tableaux.html">3. Tableaux</a>
+						<a href="./pointeurs.html">4. Pointeurs</a>
+						<a href="./chaines.html">5. Chaînes de caractères</a>
+						<a href="./entrees-sorties.html">6. Entrées-sorties</a>
+						<a href="./fonctions.html">7. Fonctions</a>
+					</div>
+					<div class="dropdown-content-in">
+						<a href="./modularisation.html">8. Modularisation</a>
+						<a href="./structures.html">9. Structures et autres types utilisateurs</a>
+						<a href="./fichier.html">10. Fichiers</a>
+						<a href="./classes.html">11. Classes d'allocation</a>
+						<a href="./preprocesseur.html">12. Préprocesseur [TODO]</a>
+						<a href="./librairies.html">13. Librairies [TODO]</a>
+					</div>
+	    		</div>
+	  		</div>
+	  		<a href="./lexique.html">Index [TODO]</a> 
+		</nav>
+	</nav>
+
+	<!--Main Content-->
+	<section id="main">
+		<!-- <h2 class="title"><center>3. Tableaux</center></h2> -->
+		
+		<section id="content">
+			<button onclick="topFunction()" id="top" title="Remonter">&#x21ea;</button>
+			
+			<h2 class="title"><center>3. Tableaux</center></h2>
+			
+			<p>
+				Les tableaux en langage C ressemblent à ce que vous avez appris en Java. Mais vous devez être attentifs aux nombreuses différences qui risquent de vous 
+				poser problèmes.
+			</p>
+			<p>
+				En C, la taille des tableaux  est fixée à la compilation. C'est le résultat d'une expression entière constante qui ne peut en aucun cas être modifiée 
+				en cours d'exécution. Nous verrons plus tard qu'il existe une autre forme de tableau, dynamique, qui permet de gérer la taille de la table en cours 
+				d'exécution de l'application.
+			</p>
+			<p>
+				Comme il a été écrit dans l'introduction, le langage C ne réalise que très peu de contrôle, notamment en ce qui concerne la gestion des tableaux. 
+				Ni à la compilation, ni durant l'exécution, il n'y a vérification que l'indice numéro de l'élement dans le tableau reste dans les limites de l'index ensemble des indices possibles (de 0 à taille-1). Il n'y aura notamment pas d'avertissement si vous utilisez un indice négatif, ni si vous dépassez la limite de la table.
+			</p>
+			<br>
+
+			<h3 id="id_def" >Définition d'un tableau</h3>
+			<p>
+				Pour définir un tableau dans un programme C vous devez spécifier le <span class="it">type</span> des éléments, le <span class="it">nom</span> du tableau et sa <span class="it">taille</span>. Notez que <span class="bo">l'index d'un tableau 
+				commence toujours à la valeur 0</span>. </p>
+			<p>
+				Une seule syntaxe est reconnue :
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">table</span>[<span class="nbr">4</span>];   <span class="com">// définition d'une table de 4 int d'indices compris entre 0 et 3</span></code>
+				<code><span class="btyp">double</span> <span class="var">monTableau</span>[<span class="var">N</span>*<span class="var">M</span>];    <span class="com">// valable si M et N sont connus à la compilation</span></code>
+			</pre>
+			<p>
+				Notez que <span class="bo">la dimension d’un tableau ne peut être qu’une constante ou une expression constante</span> (cf. <a href="../index.html#id_cc">flag vla du compilateur cc</a>), telles que:
+			</p>
+			<pre>
+				<code><span class="ppd">#define</span> <span class="var">N</span> <span class="nbr">50</span>   <span class="com">// définition d'une constante N</span></code>
+				<code>...</code>
+				<code><span class="btyp">int</span> <span class="var">t</span>[<span class="var">N</span>];</code>
+				<code><span class="btyp">float</span> <span class="var">h</span>[<span class="nbr">2</span>*<span class="var">N</span>-<span class="nbr">1</span>];</code>
+			</pre>
+			<p>
+				Remarquez qu’une constante symbolique, définie à l’aide du mot-clé <span class="code">const</span>, ne constitue pas une expression constante. 
+				Elle ne convient donc pas pour définir la taille d'un tableau.
+			</p>
+			<p>
+				Une table peut être initialisée lors de sa définition. Les valeurs doivent alors être spécifiées entre accolades, comme dans l'exemple :
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">table</span>[<span class="nbr">4</span>] = {<span class="nbr">1</span>, <span class="nbr">123</span>, -<span class="nbr">15</span>, <span class="nbr">8</span>};</code>
+			</pre>
+			<p>
+				Dans ce cas, il faut rester attentif au fait que la taille de la table doit être suffisante pour éviter une erreur de compilation. Par contre, si la taille est supérieure au nombre de valeurs d'initialisation, les derniers éléments sont initialisés à la valeur 0. Par exemple : dans la définition suivante, 
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">table</span>[<span class="nbr">4</span>] = {<span class="nbr">1</span>, <span class="nbr">3</span>};</code>
+			</pre>
+			<p>
+				les 2 derniers éléments (aux indices 2 et 3) de la table sont automatiquement initialisés à 0.<br />
+			<p>
+				Autre possibilité, utiliser une taille implicite pour la table, valant le nombre d'éléments donnés en initialisation, comme dans l'exemple suivant :
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">table</span>[] = {<span class="nbr">1</span>, <span class="nbr">5</span>, -<span class="nbr">67</span>};</code>
+			</pre>
+			<p>
+				La table aura dès lors une dimension de 3.
+			</p>
+
+			<h3>Utilisation</h3>
+			<p>
+				L'accès à un élément d'un tableau se fait en spécifiant le nom de la table et la valeur de l'indice noté entre les caractères '<span class="hl">[</span>' et '<span class="hl">]</span>'.
+			</p>
+			<pre>
+				<code><span class="var">table</span>[<span class="nbr">2</span>]++;   <span class="com">// post incrémentation du 3ème élément du tableau </span></code>
+			</pre>
+			<p>
+				Le langage C n'a pas prévu de conserver la taille d'un tableau dans une structure particulière. Cette spécificité du langage a comme conséquences:
+			</p>
+			<ul>
+				<li>
+					<p>
+						Qu'il est impossible d'obtenir la taille sans programmer explicitement sa gestion ; 
+					</p>
+				</li>
+				<li>
+					<p>
+						Que le compilateur n'offre aucun contrôle quant aux valeurs utilisées comme indice, que cette valeur soit négative ou supérieure à la taille de la table. 
+						Il est dès lors très facile de désigner, et donc de modifier, un emplacement situé avant ou après le tableau !
+						Un tel dépassement de capacité peut constituer une grande faille de sécurité. A vous, donc, de vérifier que les indices des tableaux ne dépassent pas les 
+						limites de leur domaine de validité.
+					</p>
+				</li>
+			</ul>
+			<p>
+				Puisque l'index commence toujours à 0, les valeurs possibles pour un indice sont comprises entre 0 et la taille -1.
+			</p>
+
+			<h3>Tableaux multidimensionnels</h3>
+			<p>
+				Un tableau à 2 dimensions est considéré en C comme un tableau de tableaux ce qui implique que les indices doivent s'indiquer chacun entre crochets '<span class="hl">[</span>' et '<span class="hl">]</span>'. L'instruction
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">matrice</span>[<span class="nbr">4</span>][<span class="nbr">3</span>];</code>
+			</pre>
+			<p>
+				est la définition d'un tableau de 4 sous-tableaux (4 lignes), chacun contenant 3 <span class="it">int</span> (3 colonnes). En mémoire, ces 12 éléments sont stockés consécutivement.
+			</p>
+			<p>
+				L'initialisation d'un tableau multidimensionnel se fait en initialisant chaque sous-tableau. Les sous-tableaux non explicitement initialisés le sont à 0.
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">matrice</span>[<span class="nbr">3</span>][<span class="nbr">5</span>] = {{<span class="nbr">1</span>, <span class="nbr">3</span>, <span class="nbr">5</span>}, {<span class="nbr">2</span>, <span class="nbr">4</span>}};</code>
+			</pre>
+			<p>
+				L'accès à un des éléments de cette matrice se réalise en indiquant les 2 indices, comme dans l'exemple suivant qui initialise le dernier élément 
+				de la table déclarée précédemment à 5 :
+			</p>
+			<pre>
+				<code><span class="var">matrice</span>[<span class="var">2</span>][<span class="nbr">4</span>] = <span class="nbr">5</span>;</code>
+			</pre>
+			<p>
+				Une erreur fréquente est l'utilisation d'une notation semblable à celle employée en mathématique, en séparant les indices par une virgule. Cette écriture 
+			</p>
+			<pre>
+				<code><span class="var">matrice</span>[<span class="nbr">2</span>, <span class="nbr">1</span>];    <span class="com">// équivaut à matrice[1]</span></code>
+			</pre>
+			<p>
+				est acceptée par le compilateur mais a toutefois une signification différente de ce que vous avez appris en mathématique. 
+				Cette notation est en fait équivalente à <span class="code">matrice[1]</span>, qui référence la seconde ligne du tableau.
+				En effet, en C, l’opérateur virgule signifie que les expressions qui l'entourent sont évaluées séquentiellement de gauche à droite, donc « 2,1 » vaut 1.
+				(Nous verrons dans le <a href="pointeurs.html#id_ari-ptr">chapitre suivant</a> que <span class="code">matrice[1]</span> correspond à un pointeur vers un <span class="it">int</span>.)
+			</p>
+			
+		</section>
+	</section>
+
+	<footer>
+		<p id="copyright"> <a href="mailto:anthony.legrand@vinci.be">Anthony Legrand</a> &copy; 2018 <a href="http://www.ipl.be"><img src="../images/ipl_bleu.png" alt="logo ipl" /></a></p>
+	</footer>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

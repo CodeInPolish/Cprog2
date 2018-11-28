@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Legrand Anthony, Verriest Anthony">
+    <meta name="description" content="Syllabus langage C">
+    <meta name="keywords" content="Programmation, Langage C">
+    <title>Cours de Langage C</title>
+	<link rel="stylesheet" type="text/css" href="../css/base.css">
+	<link rel="stylesheet" type="text/css" href="../css/layout.css">
+	<link rel="stylesheet" type="text/css" href="../css/modules.css">
+</head>
+<body>
+	<header id="header">
+		<h1>Le langage C</h1>
+	</header>
+
+	<!--Navigation bar-->
+	<nav class="sticky-nav">
+		<nav class="nav">
+			<a href="../index.html">Introduction</a>
+	  		<div class="dropdown">
+	    		<button class="dropdownbtn">Cours &#x25BC;</button>
+		    	<div class="dropdown-content">
+		    		<div class="dropdown-content-in">
+						<a href="./langage.html">1. Éléments du langage</a>
+						<a href="./instructions.html">2. Instructions</a>
+						<a href="./tableaux.html">3. Tableaux</a>
+						<a href="./pointeurs.html">4. Pointeurs</a>
+						<a href="./chaines.html">5. Chaînes de caractères</a>
+						<a href="./entrees-sorties.html">6. Entrées-sorties</a>
+						<a href="./fonctions.html">7. Fonctions</a>
+					</div>
+					<div class="dropdown-content-in">
+						<a href="./modularisation.html">8. Modularisation</a>
+						<a href="./structures.html">9. Structures et autres types utilisateurs</a>
+						<a href="./fichier.html">10. Fichiers</a>
+						<a href="./classes.html">11. Classes d'allocation</a>
+						<a href="./preprocesseur.html">12. Préprocesseur [TODO]</a>
+						<a href="./librairies.html">13. Librairies [TODO]</a>
+					</div>
+	    		</div>
+	  		</div>
+	  		<a href="./lexique.html">Index [TODO]</a> 
+		</nav>
+	</nav>
+
+	<!--Main Content-->
+	<section id="main">
+		<!-- <h2 class="title"><center>5. Chaînes de caractères</center></h2> -->
+
+		<section id="content">
+			<button onclick="topFunction()" id="top" title="Remonter">&#x21ea;</button>
+
+			<h2 class="title"><center>5. Chaînes de caractères</center></h2>
+			
+			<p>
+				Contrairement à d'autres langage, le type <span class="hl">string</span> n'existe pas en C. 
+				Or cette notion est nécessaire pour permettre une interaction avec l'utilisateur qui s'exprime avec des mots.
+				Il est donc important de pouvoir représenter et manipuler aisément des chaînes de caractères.
+			</p>
+			<p>
+				Le langage C va utiliser des tableaux de caractères pour stocker les chaînes de caractères.
+				Dans le but de simplifier leurs traitements, il va introduire une particularité à ces tableaux :
+				le tableau des caractères qui représente la chaîne sera toujours terminé par un caractère spécial: '<span class="hl">\0</span>' (0X00).
+			</p>
+			<p>
+				Nous pouvons donc représenter la chaîne <span class="code">"Hello World\n"</span> par le tableau suivant: 
+			</p>
+			<img src="../images/helloWorld.png" alt="tableau de car"  width="500">
+			<p>
+				Nous remarquons que, à cause du caractère fin de chaîne '\0', le nombre de bytes utilisés dans ce tableau est 13, même si la chaîne ne compte que 12 caractères.
+			</p>
+			<p>
+				Ce schéma illustre parfaitement l'intérêt du caractère fin de chaîne. En effet, nous constatons que la variable <span class="code">str</span> nous fournit 
+				uniquement l'adresse du premier caractère de la chaîne, seule information disponible sur celle-ci. Le caractère '\0' permet dès lors au langage C de 
+				déterminer où se termine la chaîne.
+			</p>
+
+			<h3>Définition de chaînes de caractères</h3>
+			<p>
+				L'utilisation de chaînes de caractères nécessite la définition de variables, 
+				soit sous forme d'un tableau de caractères (p.e. <span class="code">char mot[25]</span>), 
+				soit sous la forme d'un pointeur sur un caractère (p.e. <span class="code">char *mot</span>).  
+				La différence se situe au niveau de la gestion de la mémoire.
+			</p>
+			<p>
+				La définition d'un tableau de caractères réserve un certain nombre de bytes en mémoire (indiqué par la taille du tableau). 
+				Cela impose de copier les caractères dans le tableau. 
+			</p>
+			<p>Par contre, la définition d'un pointeur sur un caractère ne réserve aucun espace mémoire pour stocker la chaîne, 
+				mais uniquement un pointeur, càd. une adresse où retrouver la chaîne de caractères. 
+				Pour utiliser ce pointeur, il est nécessaire de l'affecter, 
+			</p>
+			<ul>
+				<li>
+					<p>
+						Soit avec l'adresse d'une zone mémoire allouée (<span class="code">malloc</span>), 
+					</p>
+				</li>
+				<li>
+					<p>
+						Soit avec un tableau, 
+					</p>
+				</li>
+				<li>
+					<p>
+						Soit avec un autre pointeur, 
+					</p>
+				</li>
+				<li>
+					<p>
+						Ou encore avec un littéral déclaré entre guillemets <span class="hl">"</span> (défini dans le data segment RO).
+					</p>
+				</li>
+			</ul>
+
+			<h3 id="id_str-pro">Traitement des chaînes de caractères</h3>
+			<p>
+				Le premier point sur lequel il est nécessaire d'insister
+				est qu'une chaîne de caractères est un tableau de caractères
+				et que toutes les remarques énoncées à propos des tableaux restent d'application;
+				comme le fait de s'assurer que la zone mémoire est suffisante pour stocker tous les caractères dans le tabeau,
+				en n'oubliant pas de compter le caractère fin de chaîne '<span class="hl">\0</span>'.
+				Dans cette optique, il n'est pas inutile de rappeler que l'espace mémoire peut 
+				être réservé soit à la compilation (p.e. <a href="./tableaux.html#id_def"><span class="it">char ligne[257]</span></a>)
+				lorsque l'on connaît la taille du tableau et qu'elle restera fixe durant la vie du processus,
+				soit par une <a href="./pointeurs.html#id_dyn-mem">allocation dynamique</a>, 
+				lorsque la taille est inconnue à la compilation ou que cette taille peut varier en cours d'exécution.
+			</p>
+			<p>
+				Dans l'exemple suivant, nous définissons un tableau de 257 caractères permettant de stocker en mémoire une ligne lue sur l'entrée standard 
+				<span class="it">stdin</span> (clavier). Comme nous ne connaissons pas à l'avance la taille de la ligne à lire, nous choisissons une taille que nous espérons suffisante
+				et en lien avec les caractéristiques du système (la taille du buffer de lecture, multiple de 2^8=256).
+			</p>
+			<pre>
+				<code><span class="btyp">char</span> <span class="var">ligne</span>[<span class="nbr">257</span>];</code>
+				<code><span class="kwd">while</span> (<span class="fct">fgets</span>(<span class="var">ligne</span>, <span class="nbr">257</span>, <span class="sds">stdin</span>) != <span class="mac">NULL</span>) {</code>
+				<code>    <span class="fct">printf</span>(<span class="stn">"La chaîne lue est : '%s'"</span>, <span class="var">ligne</span>);</code>
+				<code>}</code>
+			</pre>
+			<p>
+				La fonction <a href="http://man7.org/linux/man-pages/man3/fgets.3.html" target="_blank"><span class="it">fgets</span></a> lit sur <span class="it">stdin</span> une ligne 
+				(jusque et y compris le caractère de fin de ligne '\n')
+				et stocke les caractères lus dans le tableau <span class="code">ligne</span>, avec un maximum de 255 caractères (pour laisser une place au 
+				caractère de fin de ligne, ainsi qu'au caractère '\0', ajouté par la fonction elle-même);
+				si l'utilisateur a introduit une ligne plus longue, la suite de la ligne sera lue lors de l'appel suivant de la fonction <span class="code">fgets</span>.
+				La fonction renvoie <span class="code">ligne</span>, i.e. l'adresse du tableau de caractères, ou NULL si une erreur ou la fin du fichier a été rencontrée.
+			</p>
+			<p>
+				Plusieurs fonctions permettent l'affichage d'une chaîne de caractères. Dans un premier temps, nous utiliserons la fonction <span class="code">printf</span>.
+				Le format à utiliser pour afficher une chaîne est <span class="hl">%s</span>.
+			</p> 
+			<p>
+				Un autre aspect à prendre en compte lors de l'utilisation des chaînes de caractères est que
+				le langage C ne prévoit aucunement le stockage de la taille de la chaîne, cette information doit être gérée par l'application elle-même.
+			</p>
+			<p>
+				Les <a href="./langage.html#id_str-val">littéraux</a> représentant une chaîne de caractères sont encadrés du caractère <span class="hl">" </span>(p.e. <span class="code">"Hello World\n"</span>).
+			</p>
+
+			<h3>Les fonctions standard</h3>
+			<p>
+				Comme il n'existe pas de type <span class="it">string</span> en C, les opérations que l'on désire accomplir sur les chaînes de caractères ne peuvent pas être 
+				réalisées au moyen d'opérateurs : pas d'opérateur  de concaténation, pas d'opérateur de comparaison, etc.
+			</p>
+			<p>
+				Pourtant ces traitements sont nécessaires.
+				La solution mise en place par les concepteurs du langage est de proposer des fonctions standard,
+				adaptées au système sur lequel tourne l'application.
+				La déclaration de ces fonctions est reprise dans le fichier d'entête <span class="hl">string.h</span>,
+				qu'il est donc impératif d'inclure dans chaque programme qui manipule des chaînes de caractères.
+			</p>
+
+			<h4>Les fonctions de base</h4>
+			<p>
+				Ces fonctions reçoivent une ou deux chaînes en paramètre.
+			</p>
+			<dl>
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strlen.3.html" target="_blank">size_t strlen (const char *s)</a>
+				</dt>
+				<dd>
+					Fonction qui calcule la longueur (le nombre de caractères) de la chaîne passée en paramètre ; <span class="code">size_t</span> est un type entier non signé.
+				</dd>
+
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strcpy.3.html" target="_blank">char* strcpy (char *dest, const char *src)</a>
+				</dt>
+				<dd>
+					Fonction qui copie la chaîne contenue à l'adresse <span class="code">src</span>
+					dans la zone mémoire dont l'adresse est <span class="code">dest</span> ;  
+					le programme doit s'assurer que <span class="code">dest</span> est suffisamment grand pour contenir le nombre de caractères de la source 
+					plus 1 (pour le caractère fin de chaîne '\0').
+					<p>Attention, il ne faut pas confondre la copie profonde effectuée par <span class="code">strcpy</span> avec l'affectation:</p>
+					<pre>
+						<code><span class="btyp">char</span> *<span class="var">s1</span> = <span class="stn">"abc"</span>;</code>
+						<code></code>
+						<code><span class="btyp">char</span> *<span class="var">s2</span> = <span class="var">s1</span>;    <span class="com">// copie de pointeurs!</span></code>
+					</pre>
+					<p>qui copie l'adresse de la chaîne "abc" dans s2 (copie superficielle)!</p>
+				</dd>
+
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strcat.3.html" target="_blank">char* strcat (char *dest, const char *src)</a>
+				</dt>
+				<dd>
+					Fonction qui concatène la chaîne pointée par <span class="code">src</span>
+					à la chaîne dont l'adresse est <span class="code">dest</span> ;
+					le programme doit s'assurer que la longueur de la zone mémoire <span class="code">dest</span>
+					est au moins égale à la somme des longueurs des deux chaînes plus 1 (pour le caractère fin de chaîne '\0').
+				</dd>
+
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strcmp.3.html" target="_blank">int strcmp (const char *dest, const char *src)</a>
+				</dt>
+				<dd>
+					Fonction qui compare deux chaînes de caractères ;
+					la valeur renvoyée sera 0  si les contenus des chaînes sont égaux,
+					inférieure à 0 si la première est plus petite suivant l'ordre alphabétique, strictement positive si la première est supérieure.
+					<p>Attention, il ne faut pas confondre la comparaison caractère par caractère réalisée par <span class="code">strcmp</span> avec la comparaison:</p>
+					<pre>
+						<code><span class="kwd">if</span> (<span class="var">p</span> == <span class="var">q</span>) {    <span class="com">// comparaison d'adresses!</span></code>
+						<code>     <span class="fct">printf</span>(<span class="stn">" ????????????? \n"</span>);</code>
+						<code>}</code>
+					</pre>
+					qui compare 2 pointeurs, càd. 2 adresses mémoires! 
+				</dd>
+			</dl>
+
+			<h4>Les fonctions de base avec une taille maximale</h4>
+			<p>
+				Les fonctions de base ne permettent pas de limiter le traitement des chaînes à un certain nombre de caractères, ce qui peut être gênant.
+				La librairie standard <span class="it">string</span> comprend d'autres fonctions qui reçoivent un paramètre supplémentaire: une taille maximale.
+			</p>
+			<dl>
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strncpy.3.html" target="_blank">char* strncpy (char *dest, const char *src, size_t n)</a>
+				</dt>
+				<dd>
+					Fonction qui copie la chaîne contenue à l'adresse <span class="code">src</span>
+					dans la zone mémoire dont l'adresse est <span class="code">dest</span> ; 
+					la copie se termine au <span class="code">\0</span> ou après n caractères,
+					mais dans ce dernier cas, le caractère <span class="code">\0</span> n'est pas recopié dans le tableau <span class="code">dest</span>.
+				</dd>
+
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strncat.3.html" target="_blank">char* strncat (char *dest, const char *src, size_t n)</a>
+				</dt>
+				<dd>
+					Fonction qui concatène la chaîne pointée par <span class="code">src</span>
+					à la chaîne dont l'adresse est <span class="code">dest</span> ;
+					la concaténation se termine au <span class="code">\0</span> ou après n caractères,
+					mais dans ce dernier cas, le caractère <span class="code">\0</span> n'est pas recopié dans le tableau <span class="code">dest</span>.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strncmp.3.html" target="_blank">int strncmp (const char *dest, const char *src, size_t n)</a>
+				</dt>
+				<dd>
+					Fonction qui compare les n premiers caractères (au maximum) de deux chaînes ;
+					la valeur renvoyée sera nulle si les chaînes sont égales,
+					inférieure à 0 si la première est plus petite suivant l'ordre alphabétique, plus grand que 0 si la première est supérieure. 
+				</dd>
+			</dl>
+
+			<h4>Les fonctions de recherches</h4>
+			<dl>
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strchr.3.html" target="_blank">char* strchr (const char *chaine, int car)</a>
+				</dt>
+				<dd>
+					Fonction qui cherche le caractère <span class="code">car</span> dans la chaîne <span class="code">chaine</span> ;
+					la fonction retourne l'adresse de la <span class="it">première</span> occurrence du caractère ou <span class="code">NULL</span> si le caractère n'est pas trouvé.
+				</dd>
+
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strrchr.3.html" target="_blank">char* strrchr (const char *chaine, int car)</a>
+				</dt>
+				<dd>
+					Fonction qui cherche le caractère <span class="code">car</span> dans la chaîne <span class="code">chaine</span> ;
+					la fonction retourne l'adresse de la <span class="it">dernière</span> occurrence du caractère ou <span class="code">NULL</span> si le caractère n'est pas trouvé.
+				</dd>
+
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strstr.3.html" target="_blank">char* strstr (const char *chaine, const char *sub)</a>
+				</dt>
+				<dd>
+					Fonction qui cherche la sous-chaîne <span class="code">sub</span> dans la chaîne <span class="code">chaine</span> ;
+					la fonction retourne l'adresse de la première occurrence de la sous-chaîne ou <span class="code">NULL</span> si la sous-chaîne n'est pas trouvée.
+				</dd>
+
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strspn.3.html" target="_blank">size_t strspn (const char *chaine, const char *ensemble)</a>
+				</dt>
+				<dd>
+					Fonction qui cherche le premier caractère  de la chaîne <span class="code">chaine</span> qui n'appartient pas à l'<span class="code">ensemble</span> ;
+					la fonction retourne l'indice de ce caractère ou la longueur de la chaîne si tous les caractères sont présents.
+				</dd>
+				
+				<dt class="code" id="id_strcspn">
+					<a href="http://man7.org/linux/man-pages/man3/strcspn.3.html" target="_blank">size_t strcspn (const char *chaine, const char *ensemble)</a>
+				</dt>
+				<dd>
+					Fonction qui cherche le premier caractère  de la chaîne <span class="code">chaine</span> qui appartient à l'<span class="code">ensemble</span> ;
+					la fonction retourne l'indice de ce caractère ou la longueur de la chaîne si aucun caractère n'est  présent.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strpbrk.3.html" target="_blank">char* strpbrk (const char *chaine, const char *ensemble)</a>
+				</dt>
+				<dd>
+					Fonction qui réalise le même traitement que <a href="#id_strcspn">strcspn</a>
+					mais renvoie un pointeur sur le premier caractère de la chaîne <span class="code">chaine</span> qui appartient à l'<span class="code">ensemble</span>,
+					ou un pointeur nul si aucun caractère n'est présent.
+				</dd>
+			</dl>
+
+			<h4 id="id_strtok">La fonction strtok</h4>
+			<p>
+				Cette fonction permet de découper une chaîne de caractères en <span class="hl">tokens</span> (mais son utilisation est très différente du <span class="bo">tokenizer</span> de Java).
+				Sa déclaration <span class="code"><a href="http://man7.org/linux/man-pages/man3/strtok.3.html" target="_blank">char* strtok (char *str, const char *delim)</a></span>
+				nous apprend que la fonction reçoit 2 arguments,
+				le premier est la chaîne de caractères à analyser:
+			</p>
+			<img src="../images/strtok1.png" alt="exemple de strtok"  width="350">
+			<p>
+				et le second est une chaîne de caractères reprenant la liste des séparateurs pris en compte pour déterminer le token.
+				La fonction renvoie l'adresse du token trouvé. 
+			</p>
+			<pre>
+				<code><span class="btyp">char</span> <span class="var">src</span>[] = <span class="stn">"IPL	02/764 46 46"</span>;</code>
+				<code><span class="btyp">char</span> *<span class="var">nom</span>;</code>
+				<code><span class="kwd">if</span> ((<span class="var">nom</span> = <span class="fct">strtok</span>(<span class="var">src</span>, <span class="stn">"\t \r"</span>)) == <span class="mac">NULL</span>) {</code>
+			    <code>    <span class="fct">fprintf</span>(<span class="sds">stderr</span>, <span class="stn">"???\n"</span>);</code>
+			    <code>    <span class="kwd">return</span> <span class="nbr">1</span>;</code>
+				<code>}</code> 
+			</pre>
+			<p>
+				Attention, la fonction va modifier la chaîne source en remplaçant le délimiteur par le caractère <span class="code">\0</span>, qui déterminera la fin du token.
+			</p>
+			<img src="../images/strtok2.png" alt="exemple de strtok"  width="350">
+			<p>
+				Pour obtenir le token suivant, il faut ré-appeler la fonction, mais cette fois le premier argument n'est plus l'adresse d'une chaîne
+				mais le pointeur nul <span class="code">NULL</span> pour spécifier à la fonction que l'on continue de travailler sur la chaîne traitée lors de l'appel précédent. 
+				La liste des délimiteurs peut être modifiée lors de chaque appel de la fonction.
+			</p>
+			<pre>
+				<code><span class="btyp">char</span> *<span class="var">prefixe</span>;</code>
+				<code><span class="kwd">if</span> ((<span class="var">prefixe</span> = <span class="fct">strtok</span>(<span class="mac">NULL</span>, <span class="stn">"/"</span>)) == <span class="mac">NULL</span>){</code>
+			    <code>    <span class="fct">fprintf</span>(<span class="sds">stderr</span>, <span class="stn">"???\n"</span>);</code>
+			    <code>    <span class="kwd">return</span> <span class="nbr">1</span>;</code>
+				<code>}</code>
+			</pre>
+			<img src="../images/strtok3.png" alt="exemple de strtok"  width="350">
+			<p>
+				Si la fonction ne trouve pas le séparateur, elle considère la fin de la chaine source comme le token à renvoyer.
+			</p>
+			<pre>
+				<code><span class="btyp">char</span> *<span class="var">numero</span>;</code>
+				<code><span class="kwd">if</span> ((<span class="var">numero</span> = <span class="fct">strtok</span>(<span class="mac">NULL</span>, <span class="stn">":"</span>)) == <span class="mac">NULL</span>){</code>
+			    <code>    <span class="fct">fprintf</span>(<span class="sds">stderr</span>, <span class="stn">"???\n"</span>);</code>
+			    <code>    <span class="kwd">return</span> <span class="nbr">1</span>;</code>
+				<code>}</code> 
+			</pre>
+			<img src="../images/strtok4.png" alt="exemple de strtok"  width="350">
+			<p>
+				Lorsque la chaîne est vide, la fonction renvoie un pointeur nul.
+			</p>
+			<pre>
+				<code><span class="btyp">char</span> *<span class="var">adresse</span>;</code>
+				<code><span class="kwd">if</span> ((<span class="var">adresse</span> = <span class="fct">strtok</span>(<span class="mac">NULL</span>, <span class="stn">":;"</span>)) == <span class="mac">NULL</span>){</code>
+			    <code>    <span class="fct">fprintf</span>(<span class="sds">stderr</span>, <span class="stn">"C'est fini...\n"</span>);</code>
+			    <code>    <span class="kwd">return</span> <span class="nbr">1</span>;</code>
+				<code>}</code>
+			</pre>
+			<img src="../images/strtok5.png" alt="exemple de strtok"  width="370">
+
+			<h4>Les fonctions de conversions numériques</h4>
+			<p>
+				La conversion d'une chaîne de caractères en la valeur numérique qu'elle représente peut se faire en utilisant des fonctions de conversion simple -
+				<span class="code">double atof(const char *str)</span>, <span class="code">int atoi(const char *str)</span>, <span class="code">long atol(const char *str)</span> -
+				qui ne donnent aucune information sur le résultat, ou grâce à des fonctions qui fourniront des informations exploitables
+				pour s'assurer que la conversion est correcte - 
+				<span class="code">double strtod(const char *str, char **pptr)</span>,
+				<span class="code">long strtol(const char *str, char **pptr, int base)</span>,
+				<span class="code">unsigned long strtoul(const char *str, char **pptr, int base)</span>.
+				Ces fonctions nécessitent l'inclusion du fichier <span class="hl">stdlib.h</span>.
+			</p>
+			<p>
+				Voici les fonctions de conversions simples:
+			</p>
+			<dl>
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/atof.3.html" target="_blank">double atof(const char *str)</a>
+				</dt>
+				<dd>
+					Cette fonction convertit la valeur comprise dans la chaîne <span class="code">str</span> en un nombre <span class="code">double</span> ;
+					la conversion se termine au premier caractère qui n'est pas interprétable.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/atoi.3.html" target="_blank">int atoi(const char *str)</a>
+				</dt>
+				<dd>
+					Cette fonction convertit la valeur comprise dans la chaîne <span class="code">str</span> en un nombre <span class="code">int</span> ;
+					la conversion se termine au premier caractère qui n'est pas interprétable.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/atol.3p.html" target="_blank">int atol(const char *str)</a>
+				</dt>
+				<dd>
+					Cette fonction convertit la valeur comprise dans la chaîne <span class="code">str</span> en un nombre <span class="code">long</span> ;
+					la conversion se termine au premier caractère qui n'est pas interprétable.
+				</dd>
+			</dl>
+			<p>
+				Les fonctions suivantes convertissent la chaîne avec une référence sur le caractère qui cause l'arrêt de la conversion.
+				Dans ces fonctions, le paramètre <span class="code">char **pptr</span> permet à la fonction de renvoyer l'adresse du caractère qui a causé l'arrêt de la conversion.
+				De plus la fonction positionne la variable système  <span class="code">errno</span> à un code d'erreur qui indique la raison de l'arrêt de la conversion.
+			</p>
+			<dl>
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strtod.3.html" target="_blank">double strtod(const char *str, char **pptr)</a>
+				</dt>
+				<dd>
+					Cette fonction convertit la valeur comprise dans la chaîne <span class="code">str</span> en un nombre <span class="code">double</span> ;
+					la conversion se termine au premier caractère qui n'est pas interprétable, dont l'adresse est renvoyée dans le paramètre <span class="code">pptr</span>.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strtol.3.html" target="_blank">long strtol(const char *str, char **pptr, int base)</a>
+				</dt>
+				<dd>
+					Cette fonction convertit la valeur comprise dans la chaîne <span class="code">str</span> en un nombre <span class="code">long int</span> ;
+					elle convertit un nombre encodé dans une <span class="code">base</span> comprise entre 2 et 36 ;
+					la conversion se termine au premier caractère qui n'est pas interprétable.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/strtoul.3.html" target="_blank">unsigned long strtoul(const char *str, char **pptr, int base)</a>
+				</dt>
+				<dd>
+					Cette fonction convertit la valeur comprise dans la chaîne <span class="code">str</span> en un nombre <span class="code">unsigned long int</span> ;
+					elle convertit un nombre encodé dans une <span class="code">base</span> comprise entre 2 et 36 ;
+					la conversion se termine au premier caractère qui n'est pas interprétable.
+				</dd>
+			</dl>
+
+			<h4>Les fonctions de traitements sur la mémoire</h4>
+			<p>
+				Semblables aux fonctions de traitement des chaînes de caractères, elles utilisent des zones mémoires non spécifiques aux chaînes de caractères
+				et donc se basent sur une dimension (en bytes) pour limiter leur action.
+			</p>
+			<dl>
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/memchr.3.html" target="_blank">void* memchr (const  void *ptr, int car, size_t n)</a>
+				</dt>
+				<dd>
+					Fonction qui cherche le caractère <span class="code">car</span> dans la zone mémoire d'adresse <span class="code">ptr</span> sur <span class="code">n</span> bytes ;
+					la fonction retourne l'adresse de la première occurrence du caractère ou <span class="code">NULL</span> si le caractère n'est pas trouvé.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/memcmp.3.html" target="_blank">int memcmp (const  void *ptr1, const void *ptr2, size_t n)</a>
+				</dt>
+				<dd>
+					Fonction qui compare les n premiers bytes de deux zones de mémoire.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/memcpy.3.html" target="_blank">char* memcpy (void *dest, const  void *src, size_t n)</a>
+				</dt>
+				<dd>
+					Fonction qui copie n bytes d'une zone mémoire dans une autre.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/memmove.3.html" target="_blank">char* memmove (void *dest, const void *src, size_t n)</a>
+				</dt>
+				<dd>
+					Fonction qui copie n bytes d'une zone mémoire dans une autre, les zones mémoire peuvant se superposer.
+				</dd>
+				
+				<dt class="code">
+					<a href="http://man7.org/linux/man-pages/man3/memset.3.html" target="_blank">void* memset (void *ptr, int car, size_t n)</a>
+				</dt>
+				<dd>
+					Fonction qui place <span class="code">n</span> caractères <span class="code">car</span> dans la zone mémoire <span class="code">ptr</span>.
+				</dd>
+			</dl>
+
+			<h3>Tableaux de chaînes de caractères</h3>
+			<p>
+				En accord avec la définition d'une chaîne de caractères, nous comprenons aisément qu'un tableau de chaînes de caractères est en fait
+				un tableau de tableaux de caractères, peut-être un peu particulier.
+			</p>
+
+			<h4>Tables définies à la compilation</h4>
+			<p>
+				Une table de chaînes de caractères peut être définie de deux manières différentes:
+			</p>
+			<p>
+				soit comme une table de tables de caractères
+			</p>
+			<pre>
+				<code><span class="btyp">char</span> <span class="var">tabTab</span>[<span class="var">4</span>][<span class="var">4</span>] = {<span class="stn">"ABC"</span>, <span class="stn">"DE"</span>, <span class="stn">"F"</span>};</code>
+			</pre>
+			<img src="../images/TableDeTables.png" alt="table de tables"  width="600">
+			<p>
+				soit comme une table de pointeurs sur un caractère
+			</p>
+			<pre>
+				<code><span class="btyp">char</span>* <span class="var">tabPtr</span>[<span class="nbr">4</span>] = {<span class="stn">"ABC"</span>, <span class="stn">"DE"</span>, <span class="stn">"F"</span>};</code>
+			</pre>
+			<img src="../images/TableDePointeurs.png" alt="table de pointeurs"  width="450">
+			<p>
+				Dans le second cas, la table <span class="code">tabPtr</span> contient des adresses de chaînes (l'adresse est mise à NULL si aucune chaîne n'est définie).
+				Tandis que dans le premier cas, la table <span class="code">tabTab</span> contient des tableaux de 4 caractères (le caractère est mis à zéro s'il n'est pas défini).
+			</p>
+
+			<h4>Tables dynamiques</h4>
+			<p>
+				Pour allouer une table de chaînes de caractères  <span class="code">char **table</span> dynamiquement,
+				il faut d'abord allouer la table des pointeurs <br><span class="code">table=(char**)malloc((n+1)*sizeof(char*))</span>,
+				où n+1 permet de tenir compte du pointeur nul qui marquera la fin de la table (ce qui facilitera son parcours),
+				et ensuite pour chaque pointeur, allouer la mémoire suffisante et recopier la chaîne.
+			</p>
+			<pre>
+				<code><span class="btyp">char</span> <span class="var">tabTab</span>[<span class="nbr">4</span>][<span class="nbr">4</span>] = {<span class="stn">"ABC"</span>, <span class="stn">"DE"</span>, <span class="stn">"F"</span>};</code>
+				<code><span class="btyp">char</span> **<span class="var">tabDyn</span>;</code>
+				<code></code>
+				<code><span class="com">// allocation de 4 pointeurs sur un caractère</span></code>
+				<code><span class="kwd">if</span> ((<span class="var">tabDyn</span> = (<span class="btyp">char</span>**)<span class="fct">malloc</span>(<span class="nbr">4</span>*<span class="kwd">sizeof</span>(<span class="btyp">char</span>*))) == <span class="mac">NULL</span>){</code>
+				<code>    <span class="fct">perror</span>(<span class="stn">"Malloc KO\n"</span>);</code>
+				<code>    <span class="kwd">return</span> <span class="nbr">1</span>;</code>
+				<code>}</code>
+				<code></code>
+				<code><span class="com">// copie des chaînes de tabTab dans tabDyn</span></code>
+				<code><span class="kwd">for</span> (<span class="btyp">int</span> <span class="var">i</span>=<span class="nbr">0</span>; <span class="var">i</span>&lt;<span class="nbr">4</span>; <span class="var">i</span>++) {</code>
+			    <code><span class="kwd">    if</span> (<span class="var">tabTab</span>[<span class="var">i</span>]) == <span class="mac">NULL</span>) {</code>
+		        <code>        <span class="com">// copie de pointeur NULL</span></code>
+		        <code>        <span class="var">tabDyn</span>[<span class="var">i</span>] = <span class="mac">NULL</span>;</code>
+		    	<code>    <span>}</span> <span class="kwd">else</span> {</code>
+		        <code>        <span class="com">// allocation de la mémoire pointée par tabDyn[i] pour stocker la chaîne tabTab[i]</span></code>
+		        <code>        <span class="kwd">if</span> ((<span class="var">tabDyn</span>[<span class="var">i</span>] = (<span class="btyp">char</span>*)<span class="fct">malloc</span>((<span class="fct">strlen</span>(<span class="var">tabTab</span>[<span class="var">i</span>])+<span class="nbr">1</span>)*<span class="kwd">sizeof</span>(<span class="btyp">char</span>))) == <span class="mac">NULL</span>) {</code>
+				<code>            <span class="fct">perror</span>(<span class="stn">"Malloc KO\n"</span>);</code>
+				<code>            <span class="kwd">return</span> <span class="nbr">1</span>;</code>
+		        <code>         }</code>
+		        <code></code>
+		        <code>    <span class="com">// copie de la chaîne tabTab[i] dans la zone mémoire pointée par tabDyn[i]</span></code>
+		        <code>    <span class="fct">strcpy</span>(<span class="var">tabDyn</span>[<span class="var">i</span>], <span class="var">tabTab</span>[<span class="var">i</span>]);</code>
+		    	<code>    }</code>
+				<code>}</code>
+			</pre>
+			<img src="../images/TableDynamique.png" alt="table dynamique"   width="440">
+
+			<h4>Un cas particulier: le tableau des arguments du programme</h4>
+			<p>
+				Lorsque l'utilisateur veut passer des arguments au programme, il doit utiliser une structure particulière: un tableau des arguments
+				déclaré comme paramètre de la fonction principale <span class="code">main</span>.
+				Chaque argument de l'application est une chaîne de caractères qui est reprise dans un tableau.
+				Le premier élément de cette table, l'élément 0 du tableau, est le nom du processus.
+				L'autre paramètre de cette fonction <span class="code">main</span>, de type <span class="code">int</span>, donne le nombre de chaînes dans la table,
+				à savoir le nombre des arguments + 1.
+				Le dernier élément de la table est un pointeur nul pour marquer la fin de la table.
+			</p>
+
+			<img src="../images/argv.png" alt="argv"   width="500">
+
+			<p>
+				Si l'utilisateur appelle le programme suivant :
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="fct">main</span> (<span class="btyp">int</span> <span class="var">argc</span>, <span class="btyp">char</span> *<span class="var">argv</span>[]) {</code>
+			    <code>    <span class="fct">printf</span>(<span class="stn">"Le nom du processus est '%s'\n"</span>, *<span class="var">argv</span>);</code>
+			    <code>    <span class="kwd">if</span> (<span class="var">argc</span> == <span class="nbr">3</span>){</code>
+			    <code>        <span class="fct">printf</span>(<span class="stn">"Le nom du premier argument est '%s'\n"</span>, *(<span class="var">argv</span>+<span class="nbr">1</span>));</code>
+			    <code>        <span class="fct">printf</span>(<span class="stn">"Le nom du second argument est '%s'\n"</span>, <span class="var">argv</span>[<span class="nbr">2</span>]);</code>
+			    <code>    }</code>		
+				<code>}</code>
+			</pre>
+			<p>
+				en introduisant dans le shell la commande suivante :
+			</p> 
+			<pre>
+				./affiche arg1 arg2
+			</pre>
+			<p>
+				Voici le résultat qui s'affichera
+			</p>
+			<pre>
+				Le nom du processus est './affiche'
+				Le nom du premier argument est 'arg1'
+				Le nom du second argument est 'arg2'
+			</pre>
+
+			<h3>Traitement des caractères</h3>
+			<p>
+				Avant de terminer ce chapitre, passons rapidement en revue quelques macros de traitements d'un caractère.
+			</p>
+			<p>
+				Les traitements essentiels des caractères ont été codés dans des macros, définies dans le fichier d'entête <span class="code">ctype.h</span>
+				de la librairie standard C.
+				Ces macros permettent de caractériser un caractère (stocké dans un <span class="code">char</span> ou dans un <span class="code">int</span>):
+			</p>
+			<dl>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/isalpha.3.html" target="_blank">int isalpha(int c)</a></dt><dd>teste si c est une lettre</dd> 
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/islower.3.html" target="_blank">int islower(int c)</a></dt><dd>teste si c est une lettre minuscule</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/isupper.3.html" target="_blank">int isupper(int c)</a></dt><dd>teste si c est une lettre majuscule</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/isdigit.3.html" target="_blank">int isdigit(int c)</a></dt><dd>teste si c est une chiffre</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/isalnum.3.html" target="_blank">int isalnum(int c)</a></dt><dd>teste si c est une lettre ou un chiffre</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/isxdigit.3.html" target="_blank">int isxdigit(int c)</a></dt><dd>teste si c est une chiffre hexadécimal</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/ispunct.3.html" target="_blank">int ispunct(int c)</a></dt><dd>teste si c est un caractère de ponctuation</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/isprint.3.html" target="_blank">int isprint(int c)</a></dt><dd>teste si c est un caractère imprimable (32 à 126)</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/isgraph.3.html" target="_blank">int isgraph(int c)</a></dt><dd>teste si c est un caractère imprimable visible (33 à 126)</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/iscntrl.3.html" target="_blank">int iscntrl(int c)</a></dt><dd>teste si c est un caractère de contrôle (0 à 31 ou 127)</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/isspace.3.html" target="_blank">int isspace(int c)</a></dt><dd>teste si c est un espacement (' ', '\t', '\n', '\r', '\f', '\v')</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/isascii.3.html" target="_blank">int isascii(int c)</a></dt><dd>teste si c est compris entre 0 et 127</dd>            
+			</dl>
+			<br>
+			<p>
+				Ou de modifier un caractère:
+			</p>
+			<dl>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/tolower.3.html" target="_blank">int tolower(int c)</a></dt><dd>renvoie le caractère en minuscule</dd>
+            <dt class="code"><a href="http://man7.org/linux/man-pages/man3/toupper.3.html" target="_blank">int toupper(int c)</a></dt><dd>renvoie le caractère en majuscule</dd>
+			</dl>	
+			
+		</section>
+	</section>
+
+	<footer>
+		<p id="copyright"> <a href="mailto:anthony.legrand@vinci.be">Anthony Legrand</a> &copy; 2018 <a href="http://www.ipl.be"><img src="../images/ipl_bleu.png" alt="logo ipl" /></a></p>
+	</footer>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>

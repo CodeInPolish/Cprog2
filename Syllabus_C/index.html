@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Legrand Anthony, Verriest Anthony">
+    <meta name="description" content="Syllabus langage C">
+    <meta name="keywords" content="Programmation, Langage C">
+	<title>Cours de langage C</title>
+	<link rel="stylesheet" type="text/css" href="css/base.css">
+	<link rel="stylesheet" type="text/css" href="css/layout.css">
+	<link rel="stylesheet" type="text/css" href="css/modules.css">
+</head>
+<body>
+	<header id="header">
+		<h1>Le langage C</h1>
+	</header>
+
+	<!--Navigation bar-->
+	<nav class="sticky-nav">
+		<nav class="nav">
+			<a href="index.html">Introduction</a>
+	  		<div class="dropdown">
+	    		<button class="dropdownbtn">Cours &#x25BC;</button>
+	    		<div class="dropdown-content">
+	    			<div class="dropdown-content-in">
+						<a href="modules/langage.html">1. Éléments du langage</a>
+						<a href="modules/instructions.html">2. Instructions</a>
+						<a href="modules/tableaux.html">3. Tableaux</a>
+						<a href="modules/pointeurs.html">4. Pointeurs</a>
+						<a href="modules/chaines.html">5. Chaînes de caractères</a>
+						<a href="modules/entrees-sorties.html">6. Entrées-sorties</a>
+						<a href="modules/fonctions.html">7. Fonctions</a>
+					</div>
+					<div class="dropdown-content-in">
+						<a href="modules/modularisation.html">8. Modularisation</a>
+						<a href="modules/structures.html">9. Structures et autres types utilisateurs</a>
+						<a href="modules/fichier.html">10. Fichiers</a>
+						<a href="modules/classes.html">11. Classes d'allocation</a>
+						<a href="modules/preprocesseur.html">12. Préprocesseur [TODO]</a>
+						<a href="modules/librairies.html">13. Librairies [TODO]</a>
+					</div>
+	    		</div>
+	  		</div> 
+	  		<a href="modules/lexique.html">Index [TODO]</a>
+		</nav>
+	</nav>
+
+	<!--Main Content-->
+	<section id="main">
+		<!-- <h2 class="title"><center>Introduction</center></h2> -->
+
+		<section id="content">
+			<button onclick="topFunction()" id="top" title="Remonter">&#x21ea;</button>
+
+			<h2 class="title"><center>Introduction</center></h2>
+			
+			<h3>Historique</h3>
+			<p>
+				Le langage C est apparu au début des années 1970. À l'époque, le développement sur les
+				machines informatiques nécessitait l'emploi du langage d'assemblage spécifique à
+				chacune d'elles. Le portage d'un programme, voire d'un système d'exploitation, depuis un
+				modèle de machine vers un autre nécessitait alors une réécriture totale du code. En autorisant
+				l'expression des constructions algorithmiques usuelles (variables, boucles, fonctions...) dans un
+				langage de plus haut niveau (plus facile à lire pour un être humain) qui pouvait être traduit
+				(compilé) dans le langage spécifique à la machine sous-jacente, tout en autorisant l'accès aux
+				ressources de bas niveau de cette machine (les périphériques et la mémoire notamment), le
+				langage C pouvait être considéré comme un <span class="it">langage d'assemblage portable</span>. 
+			</p>
+
+			<p>
+				Le langage C a été conçu en 1972 par Dennis Richie et Ken Thompson, au laboratoire Bell Labs,
+				en vue de développer un nouveau système d'exploitation, Unix, portable sur différents hardwares.
+				En 1978, Brian Kernigham et Dennis Richie publient une première définition du langage, The Programming Language, 
+				connue sous le nom <span class="hl">C K&R</span> ou <span class="hl">C classique</span>.
+				Vu l'intérêt suscité  par le langage, il est adapté par de nombreux développeurs  
+				et une standardisation s'avère nécessaire. L'<span class="it">American National Standards Institute</span> (ANSI) débute les travaux en 1983. 
+				Ils déboucheront en 1988 sur une nouvelle norme, le standard <span class="hl">ANSI C</span>. En 1990, l'ISO adopte telle quelle cette norme (C90). 
+				D'autres évolutions du langage ont suivi et ont été normalisées par l'ISO: C99 en 1999 et <span class="hl">C11</span> en 2011, dernière version, qui est 
+				celle que nous utiliserons pour ce cours.			
+			</p>
+
+			<h3>Avantages</h3>
+			<p>
+				Le langage C reste un langage des plus utilisés, vu ses très nombreux avantages dont les principaux sont : 
+			</p>
+	   	<ul>
+		   	<li>
+            <p><span class="bo">Langage structuré de bas niveau</span></p>
+		   	<p>C est un langage structuré, déclaratif et récursif, offrant des structures classiques 
+					de contrôle et de déclaration. Considéré à l'origine comme un langage de haut-niveau (par rapport au langage d'assemblage), 
+					il est devenu un langage de bas niveau (par rapport notamment aux langages orientés objets), proche de la machine: 
+					chaque instruction du langage est conçue pour être compilée en un nombre d'instructions machine restreint et assez prévisible 
+					en termes d'occupation mémoire et de charge de calcul.
+				</p></li>
+            
+				<li>
+            <p><span class="bo">Portabilité</span></p>
+				<p>Les compilateurs et bibliothèques logicielles existent sur la plupart des architectures. 
+					Un programme écrit en ANSI C pour un certain système peut donc facilement être déployé sur 
+					d'autres systèmes (Windows, Unix, Linux, Pc, mini, mainframe, etc).
+				</p></li>
+
+				<li>
+            <p><span class="bo">Code performant</span></p>
+				<p>Comme C permet d'utiliser des expressions et opérateurs qui sont très proches du langage machine,
+					il permet le développement de programmes efficients et rapides. Il comporte également peu de code "inutile" (vérifications, etc.) 
+					car il est supposé que le programmeur sait ce qu'il écrit. De plus, les types définis par le langage sont conçus pour pouvoir 
+					correspondre directement aux types de données supportés par le processeur.
+				</p></li>
+
+				<li>
+            <p><span class="bo">Facilité d'apprentissage</span></p> 
+				<p>C est basé sur un noyau de fonctions et d'opérateurs limité, qui permet la formulation 
+					d'expressions simples, mais efficaces. Cette simplicité facilite l'assimilation du langage.
+				</p></li>
+			</ul>
+
+			<h3>Inconvénients</h3>
+			<p>
+				Tous ces avantages impliquent certains inconvénients auxquels les programmeurs devront faire particulièrement attention:
+			</p>
+			<ul>
+				<li>
+            <p><span class="bo">Efficience et compréhensibilité</span></p>
+				<p>Le C offre la possibilité d'utiliser des expressions compactes et efficientes. 
+					Cependant, leur utilisation nécessite de l'expérience et n'est pas facilement accessible à des débutants. 
+					Sans commentaires ou explications, les programmes peuvent par conséquent devenir incompréhensibles, donc inutilisables.
+				</p></li>
+
+				<li>
+            <p><span class="bo">Portabilité et bibliothèques de fonctions</span></p>
+				<p>La portabilité est l'un des avantages les plus importants de C: 
+					en écrivant des programmes qui respectent le standard ANSI-C, nous pouvons les utiliser sur n'importe quelle machine 
+					possédant un compilateur ANSI-C. Cependant, si un programmeur désire faire appel à une fonction spécifique de la machine
+					(p.ex: utiliser une carte graphique spéciale), il risque de perdre la portabilité. Ainsi, les avantages d'un programme 
+					portable doivent être payés par la restriction des moyens de programmation.
+				</p></li>
+
+				<li>
+            <p><span class="bo">Discipline de programmation</span></p>
+				<p>C est un langage près de la machine, donc dangereux et bien que C soit un 
+					langage de programmation structuré, les compilateurs font peu de vérifications et ne nous forcent pas à adopter un certain style 
+					de programmation. Dans un certain sens, tout est permis et la tentation de programmer du 'code spaghetti' est grande. 
+					(Même la commande 'goto', si redoutée par les puristes, ne manque pas en C!) 
+					Par conséquent, si le programmeur a beaucoup de libertés, il a aussi des responsabilités: 
+					il doit veiller à sécuriser son code, adopter un style de programmation strict et programmer de manière structurée et claire.
+				</p></li>
+			</ul>
+
+			<h3>Premier programme</h3>
+			<p>
+				Voici un premier programme qui affiche un message de bienvenue sur la sortie standard <span class="hl">stdout</span>.
+			</p>
+			<pre>
+				<code><span class="ppd">#include</span> <span class="hdf">&lt;stdlib.h&gt;</span></code>
+			    <code><span class="ppd">#include</span> <span class="hdf">&lt;stdio.h&gt;</span></code>
+			    <code></code>
+				<code><span class="btyp">int</span> <span class="fct">main</span> () {</code>
+				<code>    <span class="fct">printf</span>(<span class="stn">"Hello world\n"</span>);</code>
+				<code>    <span class="fct">exit</span>(<span class="nbr">0</span>);</code>
+				<code>}</code>
+			</pre>
+			<p> 
+				Dans cet exemple, 
+			</p>
+			<ul>
+				<li>
+					<p>
+						Les lignes 1 et 2 sont des directives du préprocesseur (préfixées par #) qui incluent le contenu des fichiers <span class="hl">stdlib.h</span> et <span class="hl">stdio.h</span> dans notre source.
+					</p>
+				</li>
+				<li> 
+					<p>
+						La ligne 3 est une ligne vide, ignorée par le compilateur.
+					</p>
+				</li>
+				<li> 
+					<p>
+						La ligne 4 est le nom de la fonction principale, point d'entrée de l'application.
+					</p>
+				</li>
+				<li> 
+					<p>
+						La ligne 5 est l'appel de la fonction <span class="hl">printf</span> (déclarée dans <code>stdio.h</code>) qui affiche sur la sortie standard <span class="hl">stdout</span> (écran).
+					</p>
+				</li>
+				<li> 
+					<p>
+						La ligne 6 est l'appel à la fonction <span class="hl">exit</span> (déclarée dans <code>stdlib.h</code>), instruction qui permet de quitter l'application en renvoyant l'<span class="hl">exit code</span> ou <span class="hl">status code</span> 0 (fin normale du processus) au shell appelant.
+					</p>
+				</li>
+				<li> 
+					<p>
+						La ligne 7 indique la fin de la fonction <span class="hl">main</span>.
+					</p>
+				</li>
+			</ul>
+			<p>
+				Avant d'exécuter notre application, nous devons compiler la source, c-à-d la traduire en langage machine. La commande pour y arriver est la commande <span class="hl">cc</span> (pour <span class="it">C Compiler</span>).
+			</p>
+			<pre>
+				cc pgm1.c 
+			</pre>
+			<p>
+				Où <span class="hl">pgm1.c</span> est le nom du fichier source. Cette commande, si il n'y a aucune erreur, va générer un programme exécutable, appelé par défaut <span class="hl">a.out</span>.
+				Avec l'option <span class="hl">-o</span>, nous pouvons spécifier un autre nom pour notre exécutable:
+			</p>
+			<pre>
+				cc -o pgm1 pgm1.c
+			</pre>
+
+			<h4 id="id_cc" >Remarque: le compilateur <span class="it">cc</span></h4>
+			<p>
+				Le compilateur utilisé durant ce cours est le compilateur <span class="bo">cc</span> (<span class="it">C Compiler</span>) d'Ubuntu, qui correspond en réalité à un lien symbolique 
+				vers <span class="bo">gcc</span> (<span class="it">GNU Compiler Collection</span>).
+				gcc est une suite de logiciels libres de compilation qui gère à la fois le langage C et ses dérivés mais aussi le Java ou encore le Fortran.
+				Afin de limiter cette suite logicielle, nous fixons différentes options de compilation:
+			</p>
+			<ul>
+				<li>
+					<p>
+						<span class="bo">-std=c11</span> : ce flag définit le langage standard utilisé pour la compilation; ici ISO C11, la norme la plus récente du langage C, datant de 2011.
+					</p>
+				</li>
+				<li>
+					<p>
+						<span class="bo">-pedantic</span> : ce flag indique au compilateur de rapporter tous les avertissements (<span class="it">warnings</span>) liés au respect strict de la norme ISO C utilisée (ici C11).
+					</p>
+				</li>
+				<li>
+					<p>
+						<span class="bo">-Wall</span> : ce flag signifie "Warning all" ; il active de nombreux avertissements de compilation.
+					</p>
+				</li>
+				<li>
+					<p>
+						<span class="bo">-Wvla</span> : ce flag active un avertissement spécifique si un tableau de taille variable (<span class="it">Variable-Length Array</span>, càd. un tableau dont la taille est déterminée à l'exécution) est défini dans le programme. 
+						Alors que le standard ANSI-C (C90) interdisait de tels tableaux, la norme suivante (C99) a intégré leur support et la dernière (C11) les a rendus optionnels.
+						Un compilateur respectant le standard C11 peut par conséquent ne pas permettre l'utilisation de VLA. Ce flag permet d'éviter les problèmes de portabilité induits 
+						par cette ambiguïté de la norme C11 vis-à-vis des VLA.
+					</p>
+				</li>
+				<li>
+					<p>
+						<span class="bo">-Werror</span> : ce flag transforme tous les avertissements en erreurs de compilation.
+					</p>
+				</li>
+				<!--
+				<li><span class="bo">-std=c11</span> : ce flag définit le langage standard utilisé pour la compilation; ici ISO C11, la norme la plus récente du langage C, datant de 2011.</li>
+				<li><span class="bo">-pedantic</span> : ce flag indique au compilateur de rapporter tous les avertissements (<span class="it">warnings</span>) liés au respect strict de la norme ISO C utilisée.</li>
+				<li><span class="bo">-Werror=vla</span> : ce flag transforme un avertissement spécifique en erreur de compilation; ici, le compilateur produira une erreur si un tableau de taille variable (<span class="it">Variable-Length Array</span>, càd. un tableau dont la taille est déterminée à l'exécution) est défini dans le programme. 
+				Alors que le standard ANSI-C (C90) interdisait de tels tableaux, la norme suivante (C99) a intégré leur support et la dernière (C11) les a rendus optionnels.
+				Un compilateur respectant le standard C11 peut par conséquent ne pas permettre l'utilisation de VLA. Ce flag permet d'éviter les problèmes de portabilité induits 
+				par cette ambiguïté de la norme C11 vis-à-vis des VLA.</li>
+				-->
+			<!-- https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html -->
+			</ul>
+			<p>
+				Pour plus d'informations sur les différentes options du compilateur, n'hésitez pas à consulter le manuel en tapant 'man gcc' dans un terminal.
+			</p>
+
+			<h3>Références</h3>
+			<p>
+				Outre ce syllabus, il vous est proposé de consulter d'autres livres et sites proposant une présentation du langage :
+			</p>
+			<ul>
+				<li>
+					<p>
+						<a href="http://www.informit.com/store/c-programming-language-9780131103627">C programming Language"</a>, le livre de référence
+					</p>
+				</li>
+				<li>
+					<p>
+						<a href="http://www.pearsonhighered.com/educator/product/Book-on-C-A-Programming-in-C/9780201183993.page">A book on C</a>, un autre livre de référence 
+					</p>
+				</li>
+				<li>
+					<p>
+						<a href="https://www.rocq.inria.fr/secret/Anne.Canteaut/COURS_C">Anne Canteaut : Programmer en C</a>
+					</p>
+				</li>
+				<li>
+					<p>
+						Pour terminer, <a href="http://ideone.com/">un compilateur en ligne</a>
+					</p>
+				</li>
+			</ul>
+		
+			<br />
+			
+			<p><b>Remerciement</b></p>
+			<p><i>Je tiens à remercier </i>Anthony Verriest<i> pour la mise en forme de ce syllabus qui rend sa consultation bien plus agréable.</i></p>
+
+		</section>
+	</section>
+
+	<footer>
+		<p id="copyright"> <a href="mailto:anthony.legrand@vinci.be">Anthony Legrand</a> &copy; 2018 <a href="http://www.ipl.be"><img src="images/ipl_bleu.png" alt="logo ipl" /></a></p>
+	</footer>
+
+	<script src="js/script.js"></script>
+</body>
+</html>

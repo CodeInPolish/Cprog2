@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Legrand Anthony, Verriest Anthony">
+    <meta name="description" content="Syllabus langage C">
+    <meta name="keywords" content="Programmation, Langage C">
+	<title>Cours de Langage C</title>
+	<link rel="stylesheet" type="text/css" href="../css/base.css">
+	<link rel="stylesheet" type="text/css" href="../css/layout.css">
+	<link rel="stylesheet" type="text/css" href="../css/modules.css">
+</head>
+<body>
+	<header id="header">
+		<h1>Le langage C</h1>
+	</header>
+
+	<!--Navigation bar-->
+	<nav class="sticky-nav">
+		<nav class="nav">
+			<a href="../index.html">Introduction</a>
+	  		<div class="dropdown">
+	    		<button class="dropdownbtn">Cours &#x25BC;</button>
+	    		<div class="dropdown-content">
+	    			<div class="dropdown-content-in">
+						<a href="./langage.html">1. Éléments du langage</a>
+						<a href="./instructions.html">2. Instructions</a>
+						<a href="./tableaux.html">3. Tableaux</a>
+						<a href="./pointeurs.html">4. Pointeurs</a>
+						<a href="./chaines.html">5. Chaînes de caractères</a>
+						<a href="./entrees-sorties.html">6. Entrées-sorties</a>
+						<a href="./fonctions.html">7. Fonctions</a>
+					</div>
+					<div class="dropdown-content-in">
+						<a href="./modularisation.html">8. Modularisation</a>
+						<a href="./structures.html">9. Structures et autres types utilisateurs</a>
+						<a href="./fichier.html">10. Fichiers</a>
+						<a href="./classes.html">11. Classes d'allocation</a>
+						<a href="./preprocesseur.html">12. Préprocesseur [TODO]</a>
+						<a href="./librairies.html">13. Librairies [TODO]</a>
+					</div>
+	    		</div>
+	  		</div> 
+	  		<a href="./lexique.html">Index [TODO]</a>
+		</nav>
+	</nav>
+
+	<!--Main Content-->
+	<section id="main">
+		<!-- <h2 class="title"><center>4. Pointeurs<center></h2> -->
+
+		<section id="content">
+			<button onclick="topFunction()" id="top" title="Remonter">&#x21ea;</button>
+
+			<h2 class="title"><center>4. Pointeurs<center></h2>
+			
+			<p>
+				La présentation du langage C nous a fait remarqué qu'un des intérêts du C est son efficacité. Une des raisons de ces bonnes performances 
+				tient à la gestion aisée de la mémoire, proche de ce que permet un langage d'assemblage.
+				La manipulation des adresses mémoire se fait au moyen des <span class="hl">pointeurs</span>. Un pointeur est un type particulier, capable de conserver 
+				l'adresse d'un byte de la  mémoire. Le pointeur est intimement lié au type de la donnée stockée à cette adresse, de manière à en respecter les contraintes.
+			</p>
+
+			<h3>Utilisation</h3>
+			<p id="id_def">
+				La définition d'une variable de type pointeur nécessite de spécifier le <span class="it">type</span> de la donnée qui sera accédée par le pointeur. Le symbole utilisé pour définir un type pointeur est le caractère <span class="hl">*</span>. 
+				Par exemple, 
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> *<span class="var">ptrI</span>;</code>
+			</pre> 
+			<p>
+				définit <span class="code">ptrI</span> comme étant un pointeur sur un <span class="it">int</span>, c'est-à-dire une variable qui contient l'adresse du premier byte d'une zone mémoire pouvant contenir un <span class="it">int</span>.
+				Tel que défini, le pointeur  n'a pas été initialisé et il n'y a pas de réservation de place mémoire pour la valeur pointée.
+			</p>
+			<p><img src="../images/pointeurs.png" alt="pointeur"  width="130"></p>
+			<p>
+				La variable pointeur contient donc  une valeur quelconque qui peut être l'adresse d'une zone mémoire interdite, l'adresse d'un zone déjà utilisée, etc. <span class="hl">Un pointeur doit donc être initialisé avant d'être utilisé.</span>
+			</p>
+			<p>
+				Pour être initialisé, un pointeur doit recevoir une adresse. Différentes possibilités s'offrent à nous :
+			</p>
+			<ul>
+				<li>
+					<p>
+						L'adresse d'une variable déjà définie ; pour l'obtenir, il faut utiliser l'opérateur <span class="hl" id="id_adr">&</span>.
+					</p>
+					<pre>
+						<code><span class="var">ptrI</span> = &amp;<span class="var">varA</span>;</code>
+					</pre> 
+					<span class="code">ptrI</span> reçoit l'adresse de la variable <span class="code">varA</span>.
+					<img src="../images/pointeursurA.png" alt="pointeur"   width="220">
+				</li>
+				<li>
+					<p>
+						L'adresse contenue dans un autre pointeur (du même type)
+					</p>
+					<pre>
+						<code><span class="btyp">int</span> *<span class="var">autrePtr</span> = <span class="var">ptrI</span>;</code>
+					</pre>
+					<p>
+						<span class="code">autrePtr</span> reçoit l'adresse contenue dans le pointeur <span class="code">ptrI</span>.
+					</p>
+				</li>
+				<li>
+					<p>
+						L'adresse d'un tableau 
+					</p>
+					<pre>
+						<code><span class="var">ptrI</span> = <span class="var">tab</span>;</code>
+					</pre> 
+					<p>
+						<span class="code">ptrI</span> reçoit l'adresse du tableau <span class="code">tab</span>, c-à-d l'adresse du premier élément du tableau. Cette affectation est donc équivalente à: <span class="code"> ptrI = &tab[0]</span>.
+					</p>
+				</li>
+				<li>
+					<p>
+						L'adresse d'une zone mémoire dynamique (voir <a href="./pointeurs.html#id_dyn-mem">plus bas</a>)
+					</p>
+				</li>
+				<li>
+					<p>
+						Ou encore l'adresse <span class="code">NULL</span> spécifiant une adresse inaccessible. Cette valeur sera également utilisée comme valeur de retour pour indiquer qu'une fonction renvoyant un pointeur ne s'est pas terminée correctement.
+					</p>
+				</li>
+			</ul>
+			<p id="id_mem-ref">
+				Le contenu de la mémoire référencée par un pointeur est obtenu en appliquant l'opérateur <span class="hl">*</span> au pointeur (la déréférenciation), comme le montre l'exemple suivant :
+			</p>
+			<pre>
+				<code><span class="fct">printf</span>(<span class="stn">"%d"</span>, *<span class="var">ptrI</span>);   <span class="com">// affiche la valeur entière pointée par ptrI </span></code>
+			</pre>
+
+			<h3>Pointeurs constants</h3>
+			<p>
+				Le qualificateur de type <span class="hl">const</span> doit être utilisé avec précaution avec les pointeurs. En effet, 
+			</p>
+			<pre>
+				<code><span class="kwd">const</span> <span class="btyp">char</span> *<span class="var">p1</span>;</code>
+			</pre>
+			<p>
+				définit un pointeur sur un caractère constant, tandis que 
+			</p>
+			<pre>
+				<code><span class="btyp">char</span> *<span class="kwd">const</span> <span class="var">p2</span>;</code>
+			</pre>
+			<p>
+				définit un pointeur constant sur un caractère.
+			</p>
+			<p>
+				Toute affectation avec pour membre gauche le caractère *p1 ou le pointeur p2 est par conséquent illégale.
+			</p>
+
+			<h3>La priorité des opérateurs</h3>
+			<p>
+				Nous avons abordé la <a href="./langage.html#id_ope-pri">priorité des principaux opérateurs</a> lors de la présentation du langage.
+				Nous pouvons ajouter à la liste les opérateurs liés à la manipulation des pointeurs:
+			</p>
+			<table>
+				<tbody>
+					<tr>
+						<th>Niveau de priorité</th>
+						<th>Opérateur</th>
+						<th>description</th>
+						<th>Associativité</th>
+					</tr>
+					<tr>
+						<td rowspan=4>17</td>
+						<td>[]</td>
+						<td>indice de tableau</td>
+						<td rowspan=4>gauche</td>
+					</tr>
+					<tr>
+						<td>(...)</td>
+						<td>appel de fonction</td>
+					</tr>
+					<tr>
+						<td>.</td>
+						<td>sélection de membre</td>
+					</tr>
+					<tr>
+						<td>-&gt;</td>
+						<td>sélection de membre par déréférencement</td>
+					</tr>
+					<tr>
+						<td rowspan=2>16</td>
+						<td>++</td>
+						<td>post-incrémentation</td>
+						<td rowspan=2>gauche</td>
+					</tr>
+					<tr>
+						<td>--</td>
+						<td>post-décrémentation</td>
+					</tr>
+					<tr>
+						<td rowspan=2>15</td>
+						<td>++</td>
+						<td>pré-incrémentation</td>
+						<td rowspan=2>droite</td>
+					</tr>
+					<tr>
+						<td>--</td>
+						<td>pré-décrémentation</td>
+					</tr>
+					<tr>
+						<td rowspan=7>15</td>
+						<td>sizeof</td>
+						<td>calcule la taille d'une variable(d'un type)</td>
+						<td rowspan=7>droite</td>
+					</tr>
+					<tr>
+						<td>~</td>
+						<td>complément à 1 (inversion des bits)</td>
+					</tr>
+					<tr>
+						<td>!</td>
+						<td>non logique </td>
+					</tr>
+					<tr>
+						<td>+</td>
+						<td>identité (opérateur unaire)</td>
+					</tr>
+					<tr>
+						<td>-</td>
+						<td>changement de signe (complément à 2)</td>
+					</tr>
+					<tr>
+						<td class="nv">&</td>
+						<td class="nv">adresse</td>
+					</tr>
+					<tr>
+						<td class="nv">*</td>
+						<td class="nv">indirection, déréférenciation</td>
+					</tr>
+					<tr>
+						<td >14</td>
+						<td>(type)</td>
+						<td>cast, changement forcé de type</td>
+						<td>droite</td>
+					</tr>
+					<tr>
+						<td rowspan=3>13</td>
+						<td>*</td>
+						<td>multiplication</td>
+						<td rowspan=3>gauche</td>
+					</tr>
+					<tr>
+						<td>/</td>
+						<td>division </td>
+					</tr>
+					<tr>
+						<td>%</td>
+						<td>modulo (uniquement si opérandes entiers)</td>
+					</tr>
+					<tr>
+						<td rowspan=2>12</td>
+						<td>+</td>
+						<td>addition</td>
+						<td rowspan=2>gauche</td>
+					</tr>
+					<tr>
+						<td>-</td>
+						<td>soustraction</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h3>Les conversions de pointeurs</h3>
+			<p>
+				Les compilateurs C remplacent automatiquement les tables par des pointeurs. Un tableau est considéré comme un pointeur constant sur le début du tableau, sa valeur (l'adresse des données en mémoire) est invariante. Les indices des éléments sont convertis grâce à l'<a href="#id_ari-ptr">arithmétique des pointeurs</a>.
+			</p>
+			<p>
+				D'autres conversions  sont permises, telles que les conversions explicites (par cast):
+			</p> 
+			<table>
+				<tbody>
+					<tr>
+						<th>type de destination (cast)</th>
+						<th>type d'origine</th>
+					</tr>
+					<tr>
+						<td>type entier</td>
+						<td>pointeur</td>
+					</tr>
+					<tr>
+						<td><span class="code">T*</span> ou <span class="code">void*</span></td>
+						<td>un type entier ou <span class="code">void*</span> ou <span class="code">Q*</span></td>
+					</tr>	
+				</tbody>
+			</table>
+			<p>
+				Ou automatiques (lors d'affectations) sont appliquées : 
+			</p> 
+			<table>
+				<tbody>
+					<tr>
+						<th>type à gauche</th>
+						<th>type permis à droite (sans cast)</th>
+					</tr>
+					<tr>
+						<td><span class="code">void*</span></td>
+						<td>0 ou <span class="code">T*</span> ou <span class="code">void*</span></td>
+					</tr>
+					<tr>
+						<td><span class="code">T*</span> ou <span class="code">void*</span></td>
+						<td>0 ou <span class="code">T*</span> ou <span class="code">void*</span></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h3 id="id_dyn-mem">Mémoire dynamique</h3>
+			<p>
+				Vous avez vu dans le cours de langage d'assemblage qu'il existe
+				<a href="http://www.geeksforgeeks.org/memory-layout-of-c-program/"  target="_blank">plusieurs segments pour constituer un programme</a>.
+			</p>
+			<img src="../images/Memory-Layout.gif" alt="memory layout"/>
+			<p>
+				Le <span class="hl">code segment</span> contient toutes les lignes de codes ; le <span class="hl">data segment</span> contient les données initialisées ;
+				le <span class="hl">bss</span> regroupe les variables globales non initialisées à la compilation (elles seront dans ce cas mise à zéro lors de l'exécution) ; 
+				la <span class="hl">pile</span> mémorise les informations utiles des sous-programmes et le <span class="hl">heap</span> correspond à la
+				partie de la mémoire que le programme va utiliser pour alimenter les demandes de mémoire dynamique.
+			</p>
+			<p>
+				Dans un programme C, la mémoire dynamique est allouée en réponse à l'appel de la fonction <span class="code"><a href="#id_malloc">malloc</a></span>,
+				ou d'une fonction dérivée <span class="code"><a href="#id_calloc">calloc</a></span>
+				ou <span class="code"><a href="#id_realloc">realloc</a></span>.
+			</p>
+			<p>
+				La fonction <span id="id_malloc" class="code"><a href="http://man7.org/linux/man-pages/man3/malloc.3.html" target="_blank">malloc</a></span>
+				alloue le nombre de bytes demandé dans l'argument, cette mémoire est accédée grâce au pointeur retourné par la fonction.
+				En cas de problème, la fonction renvoie un pointeur nul <span class="code">NULL</span>. Il est donc impératif de toujours tester le code de retour de la fonction.
+				Voici un exemple de création d'une zone mémoire pouvant contenir une valeur <span class="code">double</span> :
+			</p>
+			<pre>
+				<code><span class="btyp">double</span> *<span class="var">ptrD</span>;</code>
+				<code><span class="kwd">if</span> ((<span class="var">ptrD</span> = (<span class="btyp">double</span>*)<span class="fct">malloc</span>(<span class="kwd">sizeof</span>(<span class="btyp">double</span>))) == <span class="mac">NULL</span>) {</code>
+		    	<code>    <span class="fct">perror</span>(<span class="stn">"Allocation dynamique de ptrD impossible"</span>);</code>
+			    <code>    <span class="kwd">return</span> <span class="nbr">1</span>;</code>
+				<code>}</code>
+			</pre>
+			<p>
+				De même, la fonction <span class="it">malloc</span> permet de créer des tableaux dynamiques, comme dans l'exemple suivant qui crée un tableau de 10 <span class="code">int</span> :
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> *<span class="var">tabDyn</span>;</code>
+				<code><span class="kwd">if</span> ((<span class="var">tabDyn</span> = (<span class="btyp">int</span>*)<span class="fct">malloc</span>(<span class="nbr">10</span>*<span class="kwd">sizeof</span>(<span class="btyp">int</span>))) == <span class="mac">NULL</span>) {</code>
+				<code>    <span class="fct">perror</span>(<span class="stn">"Allocation dynamique de tabDyn impossible"</span>);</code>
+				<code>    <span class="kwd">return</span> <span class="nbr">1</span>;</code>
+				<code>}</code>
+			</pre>
+			<p>
+				La fonction <span class="code" id="id_calloc"><a href="http://man7.org/linux/man-pages/man3/calloc.3.html" target="_blank">calloc</a></span>
+				a la particularité d'allouer une zone mémoire initialisée à zéro, tandis que la fonction <span class="code" id="id_realloc"><a href=http://man7.org/linux/man-pages/man3/realloc.3.html target="_blank">realloc</a></span>
+				permet de réallouer une zone mémoire en en modifiant la taille tout en conservant le contenu stocké dans la mémoire.
+			</p>
+			<pre>
+				<code><span class="kwd">if</span> ((<span class="var">tabDyn</span> = (<span class="btyp">int</span>*)<span class="fct">realloc</span>(<span class="var">tabDyn</span>, <span class="nbr">20</span>*<span class="kwd">sizeof</span>(<span class="btyp">int</span>))) == <span class="mac">NULL</span>) {</code>
+				<code>    <span class="fct">perror</span>(<span class="stn">"Allocation dynamique de tabDyn impossible"</span>);</code>
+		    	<code>    <span class="kwd">return</span> <span class="nbr">1</span>;</code>
+				<code>}</code>
+			</pre>
+			<p>
+				Dans cet exemple, la table <span class="code">tabDyn</span> est réallouée, éventuellement à un autre endroit de la mémoire, sa taille est doublée mais le contenu est conservé.
+			</p>
+			<p>
+				Pour une gestion saine de l'espace mémoire, il faut éviter de provoquer des <span class="hl">fuites de mémoire</span> (<span class="it">memory leaks</span>), càd. 
+				des zones mémoires qui ne sont plus accessibles, donc perdues pour l'application. La conséquence d'une telle fuite peut être la saturation 
+				de la mémoire de la machine, ce qui provoque l'interruption du processus. Il est par conséquent recommandé de libérer toute mémoire dynamique 
+				devenue inutile dans l'application. Cette libération de mémoire se fait grâce à la fonction <span id="id_free" class="code"><a href="http://man7.org/linux/man-pages/man3/free.3.html" target="_blank">free</a></span>.
+			</p>
+			<pre>
+				<code><span class="fct">free</span>(<span class="var">tabDyn</span>);</code>
+			</pre>
+			<p>
+				Une règle simple à appliquer pour éviter les fuites de mémoire est de faire systématiquement correspondre un appel à <span class="it">free</span> pour chaque appel à <span class="it">malloc</span> ou <span class="it">calloc</span>.
+			</p>
+
+			<h3 id="id_ari-ptr">Arithmétique des pointeurs</h3>
+			<p>
+				Le langage C permet de modifier la valeurs d'un pointeur en y appliquant des expressions mettant en jeu une arithmétique particulière, l'<span class="hl">arithmétique des pointeurs</span>.
+				Dans cette technique, le compilateur prend en compte la taille de l'élément pointé lors de l'ajout (ou la suppression) d'une ou de plusieurs unités, comme dans l'exemple suivant:
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">tab</span>[<span class="nbr">5</span>] = { <span class="nbr">3</span>, <span class="nbr">8</span>, <span class="nbr">11</span>, <span class="nbr">2</span>, -<span class="nbr">4</span>};</code>
+				<code><span class="btyp">int</span> *<span class="var">ptr</span> = <span class="var">tab</span>;</code>
+			</pre>
+			<img src="../images/ptr_table1.png" alt="table"  width="300">
+			<pre>
+				<code><span class="var">ptr</span>++;</code>
+			</pre>
+			<p><img src="../images/ptr_table2.png" alt="incrementation du pointeur"  width="300"></p>
+			<p>
+				Où l'incrémentation du pointeur <span class="code">ptr</span> permet d'ajouter à l'adresse qu'il contient un nombre de bytes égal à la taille d'un élément (i.e. <span class="code">sizeof(int)</span>) et donc d'accéder à l'élément suivant de la table.
+			</p>
+			<p>
+				Notez bien que des expressions telles que <span class="code">ptr++</span> sont en général valides, quelle que
+				soit l'information se trouvant réellement à l'emplacement correspondant. Comme toujours en C, il n'y a pas de vérification et la prudence reste de vigueur.
+			</p>
+			<p>
+				La soustraction de 2 pointeurs de même type donne le nombre d'éléments qui séparent les 2 adresses (et pas le nombre de bytes!).
+			</p>
+			<pre>
+				<code><span class="var">indice</span> = <span class="var">ptr</span> - <span class="var">tab</span>;</code>
+			</pre>
+			<p>
+				Il est possible d'incrémenter ou de décrémenter un pointeur de n'importe quelle quantité entière. Remarquez cependant que des opérations telles que l'addition de 2 pointeurs, bien que permises par le compilateur, fourniront probablement un résultat non significatif, càd. hors de l'espace d'adressage du programme. Les autres opérations sur les pointeurs sont sans objet.
+			</p>
+
+			<h3>Parcours d'une table par pointeurs</h3>
+			<p>
+				Il est plus efficace de parcourir une table en utilisant un pointeur, car de cette façon, on évite le calcul de l'indice à chaque itération.
+				Par exemple, le code 
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">taille</span> = <span class="nbr">10</span>, <span class="var">table</span>[<span class="nbr">10</span>];</code>
+				<code><span class="kwd">for</span> (<span class="btyp">int</span> <span class="var">i</span> = <span class="nbr">0</span>; <span class="var">i</span> &lt; <span class="var">taille</span>; <span class="var">i</span>++)</code>
+		    	<code><span class="fct">    printf</span>(<span class="stn">"%d\n"</span>, <span class="var">table</span>[<span class="var">i</span>]);</code>
+			</pre>
+			<p>
+				sera remplacé avec bonheur par la version utilisant un pointeur:
+			</p>
+			<pre>
+				<code><span class="btyp">int</span> <span class="var">taille</span> = <span class="nbr">10</span>, <span class="var">table</span>[<span class="nbr">10</span>];</code>
+				<code><span class="kwd">for</span> (<span class="btyp">int</span> *<span class="var">q</span> = <span class="var">table</span>; <span class="var">q</span> - <span class="var">table</span> &lt; <span class="var">taille</span>; <span class="var">q</span>++)</code>
+		    	<code><span class="fct">    printf</span>(<span class="stn">"%d\n"</span>, *<span class="var">q</span>);</code>
+			</pre>
+			<p>
+				Cette dernière implémentation est plus efficace que la première. En effet, dans la seconde boucle, l'accès à un élément du tableau ne nécessite que des incrémentations de pointeur (<span class="code">q++</span>), alors que dans la première boucle, un tel accès implique des additions et des multiplications. En effet, <span class="code">table[i]</span> est en réalité évalué comme suit: <span class="code">table + i*sizeof(int)</span> (càd. l'adresse du tableau, plus <span class="code">i</span> fois le nombre de bytes occupés par un <span class="it">int</span>).
+			</p>
+
+		</section>
+	</section>
+
+	<footer>
+		<p id="copyright"> <a href="mailto:anthony.legrand@vinci.be">Anthony Legrand</a> &copy; 2018 <a href="http://www.ipl.be"><img src="../images/ipl_bleu.png" alt="logo ipl" /></a></p>
+	</footer>
+
+	<script src="../js/script.js"></script>
+</body>
+</html>
