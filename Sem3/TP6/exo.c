@@ -62,10 +62,7 @@ char** addCol(char** arr, int currL, int maxL, int h){
 	char** newArr;
 	if(currL>=maxL){
 		newArr = (char**) realloc(arr,(maxL+1)*sizeof(char*));
-		newArr[maxL+1] = (char*) malloc(h*sizeof(char));
-		printf("old adress: %p\n", arr);
-		printArray(newArr, h, maxL); //realloc fait un truc bizarre...
-		printf("new adress: %p\n", newArr);		
+		newArr[maxL] = (char*) malloc(h*sizeof(char));	
 	}
 	else{
 		arr[currL] = (char*) malloc(h*sizeof(char));
