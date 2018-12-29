@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <bool.h>
+#include <stdbool.h>
 
 #define DEFAULT_SIZE 3
 #define BUFFER_SIZE 10
@@ -15,12 +15,12 @@ int chargerTable(char**, int, int **, int*);
 void main(int argc, char** argv){
     int logSize = 0;
     int physSize = 0;
-    int** tab=NULL;
+    int* tab=NULL;
 
     imprimerTable("table avant traitement:", tab, logSize);
 
     if(argc>1){
-        logSize = chargerTable(argv+1, argc-1, tab, &physSize);
+        logSize = chargerTable(argv+1, argc-1, &tab, &physSize);
         if(logSize < 0){
             printf("erreur chargement table");
             exit(1);
@@ -28,21 +28,34 @@ void main(int argc, char** argv){
         imprimerTable("table chargee", tab, logSize);
     }
 
+    char* line = NULL;
 
+    while((line=lireLigne())!=NULL){
+        if(!ajouterTable(&tab, &logSize, &physSize, atoi(line))){
+            printf("Erreur ajout\n");
+        }
+    }
+
+    imprimerTable("table complete", tab, logSize);
+
+    free(tab);
 
     exit(0);
 }
 
 void imprimerTable(char* leg, int* tab, int sz){
-    printf("%s\n", leg);
-    for(int i=0; i<sz;i++){
-        printf("%d\n", *(tab+i));
+    printf("\n%s\n", leg);
+    if(sz==0){
+        printf("\tTable vide\n");
+    }
+    for(int* ptr=tab; ptr<tab+sz;ptr++){
+        printf("\t%d\n", *ptr);
     }
 }
 
 char* lireLigne(){
-    int buffer[BUFFER_SIZE];
-    int* str=NULL;
+    char buffer[BUFFER_SIZE];
+    char* str=NULL;
     while(fgets(buffer, BUFFER_SIZE, stdin)){
         int len = strlen(buffer);
 
@@ -76,7 +89,7 @@ bool ajouterTable(int** tab, int* tailleL, int* tailleP, int x){
     if(tab==NULL){
         *tailleL = 0;
         *tailleP = DEFAULT_SIZE;
-        *tab = (int*) malloc(*tailleP*sizeof(int);
+        *tab = (int*) malloc(*tailleP*sizeof(int));
 
         if(*tab==NULL){
             return false;
@@ -91,7 +104,7 @@ bool ajouterTable(int** tab, int* tailleL, int* tailleP, int x){
         }
     }
 
-    *(tab+*tailleL) = x;
+    (*tab)[*tailleL] = x;
     (*tailleL)++;
     return true;
 }
@@ -99,7 +112,7 @@ bool ajouterTable(int** tab, int* tailleL, int* tailleP, int x){
 int chargerTable(char** mots, int nbrMots, int** tab, int* tailleP){
     int logSize = 0;
     for(int i=0;i<nbrMots;i++){
-        if(!ajouterTable(tab, &logSize, tailleP, atoi(mots[i])){
+        if(!ajouterTable(tab, &logSize, tailleP, atoi(mots[i]))){
             return -1;
         }
     }
