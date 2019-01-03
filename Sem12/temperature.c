@@ -47,6 +47,88 @@ TempArray readTemperatures(){
 	return array;
 }
 
+bool writeTemperature(FILE* f, Temperature temp){
+	int size = (int) strlen(temp.message);
+	int written = 3;
+	written -= fwrite(&(temp.id), sizeof(int), 1, f);
+	written -= fwrite(&(temp.temp), sizeof(double), 1, f);
+	written -= fwrite(&size, sizeof(int), 1, f);
+	if(size > 0){
+		written ++;
+		written -= fwrite(temp.message, size*sizeof(char), 1, f);
+	}
+	
+	if(written == 0){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+bool readTemperature(FILE* f, Temperature* temp){
+	int read = 3;
+	read -= fread(&(temp->id), sizeof(int), 1, f);
+	read -= fread(&(temp->temp), sizeof(double), 1, f);
+	int size=0;
+	read -= fread(&size, sizeof(int), 1, f);
+	temp->message = (char*) calloc((size+1), sizeof(char));
+	if(size>0){
+		read ++;
+		read -= fread(temp->message, size*sizeof(char), 1, f);
+	}
+
+	if(read == 0){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+bool writeFile(char* path, TempArray t){
+	FILE* f = fopen(path, "ab");
+
+	if(f==NULL){
+		return false;
+	}
+
+	for(int i=0;i<t.tailleLog;i++){
+		if(!writeTemperature(f,t.tab[i])){
+			return false;
+		}
+	}
+
+	fclose(f);
+	return true;
+}
+
+bool readFile(char* path, TempArray* t){
+	FILE* f = fopen(path, "rb");
+
+	if(f == NULL){
+		return false;
+	}
+
+	t->tab = (Temperature*) malloc(DEFAULT_SIZE*sizeof(Temperature));
+	Temperature buffer;
+	int index = 0;
+	while(readTemperature(f, &buffer)) {
+
+		//t->tab[index] = buffer;
+
+		if(t->tailleLog==t->taillePhys){
+			t->taillePhys*=2;
+			t->tab = realloc(t->tab, t->taillePhys*sizeof(Temperature));
+		}
+		index++;
+		t->tailleLog++;
+	}
+
+	fclose(f);
+	return index != 0 ? true : false;
+}
+
 void print(TempArray t){
 	for(int i=0;i<t.tailleLog;i++){
 		printf("%d: %f°C", t.tab[i].id, t.tab[i].temp);
@@ -70,8 +152,6 @@ int nbrPos(TempArray t){
 }
 
 void filter(TempArray t1, TempArray* t2){
-	int size = nbrPos(t1);
-	t2->tab = (Temperature*) malloc(size*sizeof(Temperature));
 	int index=0;
 	for(int i=0;i<t1.tailleLog;i++){
 		if(t1.tab[i].temp>=0){

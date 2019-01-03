@@ -11,10 +11,11 @@ int main(int argc, char** argv){
 
 	print(tab);
 
-	TempArray* filtered;
-	filter(tab, filtered);
-	//print(*filtered);
-	freeMem(filtered);
+	TempArray* read = (TempArray*) malloc(sizeof(TempArray));
+	readFile("test2",read);
+	//print(*read);
+
+	//freeMem(read);
 	freeMem(&tab);
 	exit(0);
 }
