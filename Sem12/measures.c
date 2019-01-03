@@ -13,7 +13,7 @@ int main(int argc, char** argv){
 
 	TempArray* read = (TempArray*) malloc(sizeof(TempArray));
 	readFile("test2",read);
-	//print(*read);
+	print(*read);
 
 	//freeMem(read);
 	freeMem(&tab);

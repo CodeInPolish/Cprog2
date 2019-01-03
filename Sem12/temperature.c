@@ -111,22 +111,21 @@ bool readFile(char* path, TempArray* t){
 	}
 
 	t->tab = (Temperature*) malloc(DEFAULT_SIZE*sizeof(Temperature));
+	t->tailleLog = 0;
+	t->taillePhys = DEFAULT_SIZE;
 	Temperature buffer;
 	int index = 0;
 	while(readTemperature(f, &buffer)) {
-
-		//t->tab[index] = buffer;
-
+		t->tab[t->tailleLog] = buffer;
 		if(t->tailleLog==t->taillePhys){
 			t->taillePhys*=2;
 			t->tab = realloc(t->tab, t->taillePhys*sizeof(Temperature));
 		}
-		index++;
 		t->tailleLog++;
 	}
 
 	fclose(f);
-	return index != 0 ? true : false;
+	return t->tailleLog != 0 ? true : false;
 }
 
 void print(TempArray t){
