@@ -160,6 +160,25 @@ void filter(TempArray t1, TempArray* t2){
 	}
 }
 
+void sortTemperatures(TempArray* t){
+	qsort(t->tab, t->tailleLog, sizeof(Temperature), cmptemp);
+}
+
+int cmptemp(const void* a, const void* b){
+	Temperature* t1 = (Temperature*) a;
+	Temperature* t2 = (Temperature*) b;
+
+	if(t1->temp == t2->temp){
+		return (t1->id - t2->id);
+	}
+
+	if(t2->temp > t1->temp){
+		return -1;
+	}
+
+	return 1;
+}
+
 void freeMem(TempArray* t){
 	for(int i=0;i<t->tailleLog;i++){
 		free(t->tab[i].message);

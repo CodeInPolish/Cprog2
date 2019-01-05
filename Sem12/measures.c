@@ -11,11 +11,9 @@ int main(int argc, char** argv){
 
 	print(tab);
 
-	TempArray* read = (TempArray*) malloc(sizeof(TempArray));
-	readFile("test2",read);
-	print(*read);
-
-	//freeMem(read);
+	sortTemperatures(&tab);
+	printf("Sorted:\n");
+	print(tab);
 	freeMem(&tab);
 	exit(0);
 }

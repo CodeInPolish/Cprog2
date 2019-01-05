@@ -29,5 +29,6 @@ void print(TempArray t);
 int nbrPos(TempArray t);
 void filter(TempArray t1, TempArray* t2);
 void sortTemperatures(TempArray* t);
+int cmptemp(const void* t1,const void* t2);
 void freeMem(TempArray* t);
 #endif
