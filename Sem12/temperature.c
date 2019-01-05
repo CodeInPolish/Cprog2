@@ -95,6 +95,7 @@ bool writeFile(char* path, TempArray t){
 
 	for(int i=0;i<t.tailleLog;i++){
 		if(!writeTemperature(f,t.tab[i])){
+			fclose(f);
 			return false;
 		}
 	}
